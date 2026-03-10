@@ -1,0 +1,12 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define MAX_PLAYERS 100
+#define MAX_NAME_LENGTH 256
+#define MAX_LIVES 3
+#define MAX_BULLETS 10
+#define BULLET_STATE_COUNT 3
+#define MAX_ITEMS 10
+#define ITEM_TYPES 11
+
+#endif
