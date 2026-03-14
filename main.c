@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "objects/game_state.h"
+#include "game/game_state.h"
 
 int main()
 {
@@ -35,6 +35,7 @@ int main()
     game_state_add_player(&game_state, al);
     game_state_add_player(&game_state, bb);
     game_state_add_player(&game_state, cc);
+
     print_game_state(&game_state);
     for (;;) {
         do_turn(&game_state);

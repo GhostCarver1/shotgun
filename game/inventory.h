@@ -1,7 +1,7 @@
 # include "../constants.h"
 # include <stdio.h>
 # include <stdlib.h>
-# include "item.h"
+# include "../objects/item.h"
 
 #ifndef PLAYER_INVENTORY_H
 #define PLAYER_INVENTORY_H

@@ -1,7 +1,7 @@
 #ifndef SHOTGUN_H
 #define SHOTGUN_H
-#include "player_list.h"
-#include "player.h"
+#include "../game/player_list.h"
+#include "../game/player.h"
 #include "../constants.h"
 #include "bullet.h"
 #include <stdio.h>

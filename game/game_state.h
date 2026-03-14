@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "player_list.h"
-#include "shotgun.h"
+#include "../objects/shotgun.h"
 
 typedef struct {
     // the player whos turn it currently is in
@@ -19,5 +19,7 @@ int game_state_add_player(GameState *game_state, Player player);
 Player * game_state_get_current_player(const GameState *game_state);
 void print_game_state(const GameState *game_state);
 void do_turn(GameState *game_state);
+void handle_shoot_action(GameState *game_state);
+void handle_use_item_action(GameState *game_state);
 
 #endif

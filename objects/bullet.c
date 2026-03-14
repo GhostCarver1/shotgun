@@ -1,10 +1,8 @@
-#include "player.h"
-#include "player_list.h"
+#include "../game/player.h"
+#include "../game/player_list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "player_list.h"
-#include "player.h"
 #include "../constants.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,5 +1,5 @@
 #include "inventory.h"
-#include "item.h"
+#include "../objects/item.h"
 #include "../constants.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,7 @@ void print_inventory(const Inventory *inventory)
 {
     printf("Inventory: [");
     for (size_t i = 0; i < inventory->item_count; i++) {
-        printf("%s", get_item_name(inventory->items[i].type));
+        printf("(%d) %s",inventory->items[i].type, get_item_name(inventory->items[i].type));
         if (i < inventory->item_count - 1) {
             printf(", ");
         }

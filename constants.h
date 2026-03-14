@@ -8,5 +8,5 @@
 #define BULLET_STATE_COUNT 3
 #define MAX_ITEMS 10
 #define ITEM_TYPES 11
-
+#define MAX_PLAYER_INPUT 50
 #endif
