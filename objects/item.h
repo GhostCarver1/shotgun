@@ -192,5 +192,6 @@ typedef struct {
 Item create_item(ItemType type);
 Item create_random_item();
 char * get_item_name(ItemType type);
+int delete_item(Item * item);
 
 #endif

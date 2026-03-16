@@ -88,6 +88,16 @@ void print_player_list(const PlayerList *player_list)
     PlayerLink *iterator = player_list->first;
     for (size_t i = 0; i < player_list->count; i++) {
         printf(" - %s\n", iterator->player.name);
+        iterator = iterator->next;
+}
+    }
+    
+
+void print_player_list_with_lives(const PlayerList *player_list)
+{
+    PlayerLink *iterator = player_list->first;
+    for (size_t i = 0; i < player_list->count; i++) {
+        printf(" - %s\n", iterator->player.name);
         if (iterator->player.lives <= 0) {
             printf(" [RIP]\n");
         }
@@ -97,8 +107,6 @@ void print_player_list(const PlayerList *player_list)
                 printf(" <3");
             }
             printf(" ]\n");
-            printf("   Inventory:\n");
-            print_inventory(&iterator->player.inventory);
         }
         iterator = iterator->next;
     }

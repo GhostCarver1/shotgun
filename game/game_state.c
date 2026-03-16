@@ -32,12 +32,11 @@ Player * game_state_get_current_player(const GameState *game_state)
 
 void print_game_state(const GameState *game_state)
 {
-    printf("Turn %d\n", game_state->turn_number);
-    printf("Current player: %s\n", game_state->player_list.current->player.name);
     printf("Players:\n");
-    print_player_list(&game_state->player_list);
+    print_player_list_with_lives(&game_state->player_list);
     printf("Shotgun: ");
     print_shotgun(&game_state->shotgun);
+    printf("%s... it is your turn.\n", game_state->player_list.current->player.name);
 }
 
 

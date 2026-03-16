@@ -13,6 +13,11 @@ Item create_item(ItemType type)
     return item;
 }
 
+int delete_item(Item * item)
+{
+    return 1;
+}
+
 Item create_random_item()
 {
     return create_item(rand() % ITEM_TYPES);

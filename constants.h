@@ -9,4 +9,6 @@
 #define MAX_ITEMS 10
 #define ITEM_TYPES 11
 #define MAX_PLAYER_INPUT 50
+#define MAX_NOTE_COUNT 10
+#define MAX_NOTE_TEXT_LENGTH 100
 #endif

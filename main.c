@@ -36,10 +36,10 @@ int main()
     game_state_add_player(&game_state, bb);
     game_state_add_player(&game_state, cc);
 
-    print_game_state(&game_state);
     for (;;) {
-        do_turn(&game_state);
         print_game_state(&game_state);
+        print_inventory(&game_state_get_current_player(&game_state)->inventory);
+        do_turn(&game_state);
     }
     return 0;
 }

@@ -4,7 +4,8 @@
 typedef enum {
     BULLET_DUD,
     BULLET_LIVE,
-    BULLET_FIRED
+    BULLET_FIRED,
+    BULLET_DOUBLE
 } BulletState;
 
 typedef struct {
@@ -12,5 +13,7 @@ typedef struct {
 } Bullet;
 
 Bullet create_bullet();
+char * get_bullet_name(BulletState bulletstate);
+int double_bullet_damage(Bullet * bullet);
 
 #endif

@@ -12,15 +12,16 @@ Inventory create_inventory()
     return inventory;
 }
 
-void add_random_item(Inventory *inventory)
+int add_random_item(Inventory *inventory)
 {
     if (inventory->item_count >= MAX_ITEMS) {
         fprintf(stderr, "Inventory is full\n");
-        return;
+        return -1;
     }
     Item item = create_random_item();
     inventory->items[inventory->item_count] = item;
     inventory->item_count++;
+    return 1;
 }
 
 void print_inventory(const Inventory *inventory)
@@ -33,4 +34,28 @@ void print_inventory(const Inventory *inventory)
         }
     }
     printf("]\n");
+}
+
+Item * get_item_from_name(Inventory * inventory, char * item_name)
+{
+    for (int i = 0; i<inventory->item_count; i++){
+        Item * current_item = &inventory->items[i];
+        if (strcmp(item_name, get_item_name(current_item->type))==0)
+            return current_item;
+    }
+    return NULL;
+}
+
+int remove_item(Inventory * inventory, Item * item)
+{
+    for (int i = 0; i<inventory->item_count; i++) {
+        if (item == &inventory->items[i])
+        {
+            inventory->items[i] = inventory->items[inventory->item_count - 1];
+            delete_item(item);
+            inventory->item_count--;
+            return 1;
+        }
+    }
+    return -1;
 }

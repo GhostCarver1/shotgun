@@ -19,6 +19,13 @@ Shotgun create_shotgun()
     return shotgun;
 }
 
+Shotgun delete_shotgun(Shotgun *shotgun)
+{
+    Shotgun s;
+    s.bullet_index = 0;
+    return s;
+}
+
 int shoot_shotgun(Shotgun *shotgun, Player *target)
 {
     if (shotgun->bullet_index >= MAX_BULLETS) {
@@ -32,9 +39,14 @@ int shoot_shotgun(Shotgun *shotgun, Player *target)
     Bullet *bullet = &shotgun->bullets[shotgun->bullet_index];
     shotgun->bullet_index++;
     shotgun->bullet_count--;
+    
     if (bullet->state == BULLET_LIVE) {
-        target->lives--;
+        hurt_player(target,1);
     }
+    if (bullet->state == BULLET_DOUBLE) {
+        hurt_player(target,2);
+    }
+    
     bullet->state = BULLET_FIRED;
     return 1;
 }
@@ -59,9 +71,3 @@ void print_shotgun(const Shotgun *shotgun)
     printf(" ]\n");
 }   
 
-Shotgun delete_shotgun(Shotgun *shotgun)
-{
-    Shotgun s;
-    s.bullet_index = 0;
-    return s;
-}
