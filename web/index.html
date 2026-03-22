@@ -1,0 +1,94 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Shotgun Game</title>
+</head>
+<body>
+    <pre id="ascii-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color:black; color:white; z-index: -1; font-family: monospace; white-space: pre-wrap;"></pre>
+    <h1 style="color:white">Shotgun Players</h1>
+
+    <button onclick="loadPlayers()">Refresh Players</button>
+    <button onclick="shoot()">Shoot</button>
+    <button onclick="gameState()">game</button>
+
+    <div id="game_state"></div>
+    
+
+    <div id="players"></div>
+    
+
+    <script>
+
+    function generateASCII() {
+        const cols = Math.floor(window.innerWidth );
+        const rows = Math.floor(window.innerHeight);
+
+        let output = "";
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+
+            // Create border + pattern
+            if (y === 0 || y === rows - 1) {
+                output += "*";
+            } else if (x === 0 || x === cols - 1) {
+                output += "*";
+            } else if (Math.random() < 0.20) {
+                output += "*";
+            } else {
+                output += " ";
+            }
+
+            }
+            output += "\n";
+        }
+        document.getElementById("ascii-bg").textContent = output;
+    }
+
+// Generate on load
+generateASCII();
+
+// Regenerate on resize
+window.addEventListener("resize", generateASCII);
+    
+    async function gameState() {
+        const response = await fetch("http://localhost:8080/game_state", {
+            method: "POST"
+        });
+        const game_state_html = await response.text();
+        alert(game_state_html);
+        document.getElementById("game_state").innerHTML = game_state_html;
+    }
+    
+    async function loadPlayers() {
+        const response = await fetch("http://localhost:8080/players", {
+            method: "POST"
+        });
+
+        const players = await response.json();
+
+        const playersDiv = document.getElementById("players");
+        playersDiv.innerHTML = "";
+
+        for (const player of players) {
+            const p = document.createElement("p");
+            p.textContent = `Player ${player.name}`;
+            playersDiv.appendChild(p);
+        }
+    }
+
+    async function shoot() {
+        const response = await fetch("http://localhost:8080/shoot", {
+            method: "POST"
+        });
+        const result = await response.text();
+        alert(result);
+    }
+    
+
+    </script>
+</body>
+</html>
