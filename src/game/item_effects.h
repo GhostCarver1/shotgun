@@ -10,5 +10,7 @@ int use_burner_phone(Player *player, Shotgun * shotgun);
 int use_hand_saw(Player * player, Shotgun * shotgun);
 int use_cigarette_pack(Player * player);
 int use_handcuffs(Player * player, PlayerList * player_list);
+int use_magnifying_glass(Player * player, Shotgun * shotgun);
+int use_adrenaline(Player * player, PlayerList * player_list);
 
 #endif

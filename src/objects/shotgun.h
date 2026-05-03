@@ -22,6 +22,9 @@ Shotgun delete_shotgun(Shotgun *shotgun);
 int reload_shotgun(Shotgun *shotgun);
 int shoot_shotgun(Shotgun *shotgun, Player *target);
 void print_shotgun(const Shotgun *shotgun);
+BulletState bullet_type(const Shotgun * shotgun, int index);
+BulletState next_bullet_type(const Shotgun * shotgun);
+
 
 
 #endif

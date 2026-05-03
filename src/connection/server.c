@@ -4,21 +4,12 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include "../game/game_state.h"
+#include "http_response.h"
+#include "server.h"
+#include "routes.h"
 
 
-void send_response(int client, const char *content_type, const char *body)
-{
-    dprintf(client,
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: %s\r\n"
-        "Content-Length: %zu\r\n"
-        "Access-Control-Allow-Origin: *\r\n"
-        "\r\n"
-        "%s",
-        content_type,
-        strlen(body),
-        body);
-}
+
 
 void send_file(int client, const char *filename)
 {
@@ -99,28 +90,8 @@ int setup_webpage(GameState * game_state)
         printf("Request:\n%s\n", buffer);
 
         
-        if (strncmp(buffer, "GET / ", 6) == 0) {
-            send_file(client_fd, "../web/index.html");
-            printf("file selected : %s\n", "../web/index.html");
-        }
-        else if (strncmp(buffer, "POST /players ", 14) == 0)
-        {
-            char body[4096];
-            char *ptr = body;
-            const char * game_state_html = "<h1> hi </h1>";
-            send_response(client_fd, "application/json", body);
-        }
-        else if (strncmp(buffer, "POST /game_state ", 17) == 0)
-        {
-            char body[4096];
-            char *ptr = body;
-            const char * game_state_html = "<h1> HI EMILY </h1>";
-            send_response(client_fd, "text/html", game_state_html);
-        } else {
-            printf("failure\n");
-            const char *msg = "Not found";
-            send_response(client_fd, "text/plain", msg);
-        }
+        handle_request(client_fd, buffer, game_state);
+
     }
     close(client_fd);
     return 0;

@@ -112,3 +112,12 @@ void print_player_list_with_lives(const PlayerList *player_list)
     }
 }
 
+void print_player_list_with_items(const PlayerList * player_list)
+{
+    PlayerLink * iterator = player_list-> first;
+    for (size_t i = 0; i < player_list->count; i++) {
+        printf(" - %s\n", iterator->player.name);
+        print_inventory(&iterator->player.inventory);
+    }
+}
+

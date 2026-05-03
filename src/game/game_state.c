@@ -39,6 +39,16 @@ void print_game_state(const GameState *game_state)
     printf("%s... it is your turn.\n", game_state->player_list.current->player.name);
 }
 
+char * get_game_state_json(const GameState *game_state)
+{
+    // For simplicity, we'll just return a static JSON string here. In a real implementation, you'd want to serialize the actual game state.
+    char *json = malloc(256);
+    snprintf(json, 256, "{ \"turn_number\": 0, \"current_player\": \"0\" }",
+        game_state->turn_number,
+        game_state->player_list.current ? game_state->player_list.current->player.name : "None"
+    );
+    return json;
+}
 
 
 

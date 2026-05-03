@@ -22,18 +22,19 @@ int use_item(GameState *game_state, Player *player, Item *item)
             use_hand_saw(player, &game_state->shotgun);
             break;
         case ITEM_HANDCUFFS:
-            printf("%s uses Handcuffs. It does nothing.\n", player->name);
+            printf("%s uses Handcuffs... \n", player->name);
             use_handcuffs(player, &game_state->player_list);
             break;
         case ITEM_MAGNIFYING_GLASS:
-            printf("%s uses a Magnifying Glass. It does nothing.\n", player->name);
+            printf("%s uses a Magnifying Glass.\n", player->name);
+            use_magnifying_glass(player, &game_state->shotgun);
             break;
         case ITEM_ADRENALINE:
             printf("%s uses Adrenaline. It does nothing.\n", player->name);
+            use_adrenaline(player, &game_state->player_list);
             break;
         case ITEM_EXPIRED_MEDICATION:
             printf("%s uses Expired Medication. It does nothing.\n", player->name);
-
             break;
         case ITEM_INVERTER:
             printf("%s uses an Inverter. It does nothing.\n", player->name);
@@ -53,6 +54,17 @@ int use_item(GameState *game_state, Player *player, Item *item)
     return 0;
 }
 
+int use_magnifying_glass(Player * player, Shotgun * shotgun)
+{
+    char * bullet_type = get_bullet_name(next_bullet_type(shotgun));
+    char text[MAX_NOTE_TEXT_LENGTH];
+    snprintf(text,sizeof(text), "the next shell will be a %s", bullet_type);
+    Note note = create_note(text);
+    player_add_note(player, note);
+    printf("A note was given to the player {%s}\n",text);
+    return 1;
+}
+
 int use_burner_phone(Player *player, Shotgun * shotgun)
 {
     if (shotgun->bullet_count==0)
@@ -66,7 +78,7 @@ int use_burner_phone(Player *player, Shotgun * shotgun)
     snprintf(text,sizeof(text), "the shell in %d rounds will be a %s",bullet_index,bullet_name);
     Note note = create_note(text);
     player_add_note(player, note);
-    printf("A note was given to the player {%s}",text);
+    printf("A note was given to the player {%s}\n",text);
     return 1;
 }
 
@@ -88,4 +100,9 @@ int use_handcuffs(Player * player, PlayerList * player_list)
     Player * target = request_target_player("handcuff", player_list);
     target->handcuffed = 1;
     return 1;
+}
+
+int use_adrenaline(Player * player, PlayerList * player_list)
+{
+    print_player_list_with_items(player_list);
 }

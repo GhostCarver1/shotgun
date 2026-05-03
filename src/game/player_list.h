@@ -30,5 +30,6 @@ void print_player_list(const PlayerList *player_list);
 PlayerList create_player_list();
 Player * advance_current_player(PlayerList *player_list);
 void print_player_list_with_lives(const PlayerList *player_list);
+void print_player_list_with_items(const PlayerList * player_list);
 
 #endif

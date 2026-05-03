@@ -61,6 +61,18 @@ int reload_shotgun(Shotgun *shotgun)
     return 1;
 }
 
+BulletState next_bullet_type(const Shotgun * shotgun)
+{
+    return bullet_type(shotgun, shotgun->bullet_index);
+}
+
+BulletState bullet_type(const Shotgun * shotgun, int index)
+{
+    if (index>=MAX_BULLETS)
+        return 0;
+    return shotgun->bullets[index].state;
+}
+
 void print_shotgun(const Shotgun *shotgun)
 {
     printf("[ ");
