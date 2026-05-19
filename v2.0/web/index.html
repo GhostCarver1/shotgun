@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Shotgun Games</title>
+</head>
+<body>
+    <h1> SHOTGUN GAMES </h1>
+    <h2> Welcome to the Shotgun Game Server! </h2>
+
+    <form id="login_form">
+        <label for="user_email">User Email:</label>
+        <input type="text" id="user_email" name="user_email">
+        <br>
+        <label for="user_password">User Password:</label>
+        <input type="text" id="user_password" name="user_password">
+        <br>
+        <input type="submit" value="login">
+    </form>
+
+    <h2> USER_NAME :  <span id="user_name"></span></h2>
+    <h2> USER_ID : <span id="user_id"></span></h2>
+
+    <h2> JSON </h2>
+    <pre id="json_output"></pre>
+
+
+</form>
+</body>
+</html>
+
+
+
+
+<script>
+    
+
+    const form = document.getElementById("login_form");
+
+    form.addEventListener("submit", function(event) {
+        
+        
+        event.preventDefault();
+
+        const user = {
+            user_email: document.getElementById("user_email").value,
+            user_password: document.getElementById("user_password").value
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+        login(user.user_email, user.user_password);
+    });
+
+    const user = localStorage.getItem("user");
+    if (user) {
+        const userData = JSON.parse(user);
+        document.getElementById("user_email").value = userData.user_email;
+        document.getElementById("user_password").value = userData.user_password;
+    }
+
+    async function login(email, password)
+    {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+
+            })
+        });
+        const data = await response.json();
+        data.status == "success" ? alert("Login successful!") : alert("Login failed!");
+        document.getElementById("json_output").textContent = JSON.stringify(data, null, 2);
+        if (data.status == "success") {
+            document.getElementById("user_name").textContent = data.user_name;
+            document.getElementById("user_id").textContent = data.user_id;
+        }
+
+    }
+
+</script> 
