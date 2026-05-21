@@ -1,6 +1,7 @@
 drop table if exists game_players;
 drop table if exists players;
 drop table if exists games;
+drop table if exists tokens;
 
 Create table if not EXISTS games ( 
     game_id serial Primary key 
@@ -17,6 +18,14 @@ Create table game_players (
     game_id serial references games(game_id),
     player_id serial references players(player_id),
     PRIMARY KEY (game_id, player_id)
+);
+
+Create table tokens (
+    player_id serial references players(player_id),
+    PRIMARY KEY(player_id),
+    token_hash VARCHAR(64),
+    token_start TIMESTAMP DEFAULT NOW() not null,
+    token_end TIMESTAMP not null
 );
 
 Insert into players (user_name, user_email, user_hash) values 

@@ -8,6 +8,7 @@
 #include "../database/database.h"
 #include "main.h"
 #include "handlers/login.h"
+#include "helpers/json_helper.h"
 
 
 
@@ -59,43 +60,7 @@ void send_file(int client, const char *filename)
     fclose(file);
 }
 
-int extract_json_value(const char *json, const char *key,
-                       char *output, size_t output_size)
-{
-    char pattern[64];
 
-    snprintf(pattern, sizeof(pattern), "\"%s\":\"", key);
-
-    char *start = strstr(json, pattern);
-
-    if (!start)
-    {
-        fprintf(stderr, "Missing JSON key: %s\n", key);
-        return 0;
-    }
-
-    start += strlen(pattern);
-
-    char *end = strchr(start, '"');
-
-    if (!end)
-    {
-        fprintf(stderr, "Malformed JSON for key: %s\n", key);
-        return 0;
-    }
-
-    size_t value_length = end - start;
-
-    if (value_length >= output_size)
-    {
-        value_length = output_size - 1;
-    }
-
-    strncpy(output, start, value_length);
-    output[value_length] = '\0';
-
-    return 1;
-}
 
 void setup_server_socket(int *server_fd, struct sockaddr_in * address)
 {
@@ -123,6 +88,8 @@ void setup_server_socket(int *server_fd, struct sockaddr_in * address)
         exit(EXIT_FAILURE);
     }
 
+
+
     printf("Server running on port 8080...\n");
 }
 
@@ -136,7 +103,6 @@ int setup_webpage()
     char buffer[4096];
 
     setup_server_socket(&server_fd,&address);
-    
 
     while (1) {
 
@@ -175,6 +141,32 @@ int setup_webpage()
 int main()
 {
     setup_webpage();
+}
+
+int handle_permission_request(int client_fd, const char * request)
+{
+    char * body = strstr(request, "\r\n\r\n");
+    if (!body) {
+        printf("No Body Found in Permission Request.\n");
+        send_response(client_fd, "application/json", "{\"status\":\"failure\"}");
+        return 0;
+    }
+    body += 4;
+
+    char token_buffer[TOKEN_HEX_LEN];
+    JsonStatus token_ok = extract_json_value(body, "token", token_buffer, sizeof(token_buffer));
+
+    if (!token_ok)
+    {
+        printf("Could not extract token field from json.\n");
+        send_response(client_fd, "application/json", "{\"status\":\"failure\"}");
+        return 0;
+    }
+
+    
+
+
+
 }
 
 
