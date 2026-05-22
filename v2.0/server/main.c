@@ -9,6 +9,10 @@
 #include "main.h"
 #include "handlers/login.h"
 #include "helpers/json_helper.h"
+#include <pthread.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 
 
@@ -100,43 +104,84 @@ int setup_webpage()
     int server_fd, client_fd;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    char buffer[4096];
+    
 
     setup_server_socket(&server_fd,&address);
 
     while (1) {
 
         client_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
+
         if (client_fd < 0) {
             perror("accept");
             continue;
         }
 
-        memset(buffer, 0, sizeof(buffer));
-        read(client_fd, buffer, sizeof(buffer) - 1);
-
-        //printf("Request: \n%s\n", buffer);
-
-
-        if (strncmp(buffer, "GET / ", 6) == 0) {
-            printf("Serving index.html\n");
-            send_file(client_fd, "web/index.html");
-        }
-        else if (strncmp(buffer, "POST /login ", 12) == 0) {
-            printf("PROCESSING LOGIN REQUEST\n");
-            handle_login_request(client_fd, buffer);
-        }
-        else {
-            printf("Unknown request, sending 404\n");
-            send_response(client_fd, "text/plain", "404 Not Found\n");
+        pthread_t thread_id;
+        int *client_ptr = malloc(sizeof(int));
+        if (client_ptr == NULL) {
+            perror("malloc");
+            close(client_fd);
+            continue;
         }
 
-        close(client_fd);
+        *client_ptr = client_fd;
 
+        if (pthread_create(&thread_id, NULL, handle_response, client_ptr) != 0) {
+            perror("pthread_create");
+            close(client_fd);
+            free(client_ptr);
+            continue;
+        }
+
+        pthread_detach(thread_id);
     }
 
     return 0;
 }
+
+void * handle_response(void * arg)
+{
+    int client_fd = *(int *)arg;
+    free(arg);
+
+    char buffer[4096];
+    memset(buffer, 0, sizeof(buffer));
+
+    ssize_t bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
+    buffer[bytes_read] = '\0';
+
+    printf("Bytes read: %zd\n", bytes_read);
+    printf("Raw request data:\n%s\n", buffer);
+
+     if (bytes_read <= 0) {
+        if (bytes_read < 0) {
+            perror("read");
+        }
+        close(client_fd);
+        return NULL;
+    }
+
+    printf("Request: \n%s\n", buffer);
+
+    if (strncmp(buffer, "GET / ", 6) == 0) {
+        printf("Serving index.html\n");
+        send_file(client_fd, "web/index.html");
+    }
+    else if (strncmp(buffer, "POST /login ", 12) == 0) {
+        printf("PROCESSING LOGIN REQUEST\n");
+        handle_login_request(client_fd, buffer);
+    }
+    else {
+        printf("Unknown request, sending 404\n");
+        send_response(client_fd, "text/plain", "404 Not Found\n");
+    }
+    close(client_fd);
+
+
+    return NULL;
+}
+
 
 int main()
 {
@@ -163,12 +208,7 @@ int handle_permission_request(int client_fd, const char * request)
         return 0;
     }
 
-    
-
-
-
 }
-
 
 
 int handle_signup_request(int client_fd, const char * request)

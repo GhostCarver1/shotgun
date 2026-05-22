@@ -18,6 +18,7 @@ int setup_webpage();
 int extract_json_value(const char *json, const char *key,
                        char *output, size_t output_size);
 int main();
+void * handle_response(void * arg);
 
 
 #endif

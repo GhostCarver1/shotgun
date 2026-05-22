@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EXTREMELY IMPORTANT WEBSITE</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      color: white;
+      overflow-x: hidden;
+      background: linear-gradient(45deg, red, orange, yellow, lime, cyan, blue, magenta, red);
+      background-size: 800% 800%;
+      animation: rainbowBackground 3s linear infinite;
+    }
+
+    @keyframes rainbowBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .marquee {
+      width: 100%;
+      background: black;
+      color: yellow;
+      font-size: 2rem;
+      padding: 12px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      border-top: 8px dashed hotpink;
+      border-bottom: 8px dashed cyan;
+    }
+
+    .marquee span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scrollText 8s linear infinite;
+    }
+
+    @keyframes scrollText {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    .container {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 12vw, 10rem);
+      margin: 20px 0;
+      text-shadow: 8px 8px 0 black, 12px 12px 0 hotpink;
+      animation: wobble 0.6s infinite alternate;
+    }
+
+    @keyframes wobble {
+      from { transform: rotate(-3deg) scale(1); }
+      to { transform: rotate(3deg) scale(1.06); }
+    }
+
+    .subtitle {
+      font-size: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      border: 6px solid yellow;
+      display: inline-block;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 0 30px white;
+      animation: pulse 0.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .button-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 40px auto;
+    }
+
+    button {
+      font-size: 1.3rem;
+      padding: 22px;
+      border: 6px ridge yellow;
+      border-radius: 0;
+      background: hotpink;
+      color: lime;
+      cursor: pointer;
+      text-shadow: 2px 2px black;
+      box-shadow: 8px 8px 0 black;
+      animation: buttonSpin 2s linear infinite;
+    }
+
+    button:nth-child(even) {
+      background: cyan;
+      color: red;
+      animation-direction: reverse;
+    }
+
+    button:hover {
+      transform: scale(1.3) rotate(10deg);
+      background: yellow;
+      color: blue;
+    }
+
+    @keyframes buttonSpin {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .card {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 10px double lime;
+      font-size: 1.5rem;
+      line-height: 1.5;
+      box-shadow: 0 0 50px magenta;
+    }
+
+    .floating {
+      position: fixed;
+      font-size: 3rem;
+      pointer-events: none;
+      animation: floatAround 6s linear infinite;
+      z-index: 999;
+    }
+
+    .floating:nth-of-type(1) { top: 15%; left: 5%; animation-delay: 0s; }
+    .floating:nth-of-type(2) { top: 40%; right: 7%; animation-delay: 1s; }
+    .floating:nth-of-type(3) { bottom: 20%; left: 20%; animation-delay: 2s; }
+    .floating:nth-of-type(4) { bottom: 10%; right: 20%; animation-delay: 3s; }
+
+    @keyframes floatAround {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(40px, -40px) rotate(90deg); }
+      50% { transform: translate(-20px, 30px) rotate(180deg); }
+      75% { transform: translate(30px, 20px) rotate(270deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 300px;
+      background: yellow;
+      color: red;
+      border: 8px solid blue;
+      padding: 20px;
+      font-size: 1.4rem;
+      box-shadow: 10px 10px 0 black;
+      animation: popupShake 0.2s infinite;
+      z-index: 1000;
+    }
+
+    @keyframes popupShake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(4px, -4px); }
+      50% { transform: translate(-4px, 4px); }
+      75% { transform: translate(4px, 4px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .footer {
+      margin-top: 60px;
+      padding: 30px;
+      background: black;
+      color: lime;
+      font-size: 1.5rem;
+      border-top: 12px dotted red;
+    }
+  </style>
+</head>
+<body>
+  <div class="marquee">
+    <span>🔥 WELCOME TO THE MOST IMPORTANT PAGE ON THE ENTIRE INTERNET 🔥 CLICK EVERYTHING 🔥 TRUST NOTHING 🔥</span>
+  </div>
+
+  <div class="floating">💥</div>
+  <div class="floating">🚨</div>
+  <div class="floating">🧨</div>
+  <div class="floating">⭐</div>
+
+  <main class="container">
+    <h1>SHOTGUN</h1>
+
+    <div class="subtitle">
+      MAXIMUM WEBPAGE. MINIMUM RESTRAINT.
+    </div>
+
+    <section class="button-wall">
+      <button onclick="alert('ABSOLUTELY NOTHING HAPPENED')">LOGIN NOW</button>
+      <button onclick="alert('WHY DID YOU CLICK THAT')">SIGN UP!!!</button>
+      <button onclick="alert('SERVER MAYBE RUNNING MAYBE NOT')">CHECK SERVER</button>
+      <button onclick="alert('TOKEN GENERATED EMOTIONALLY')">GET TOKEN</button>
+      <button onclick="alert('DATABASE HAS BEEN INTIMIDATED')">QUERY DB</button>
+      <button onclick="document.body.style.transform='rotate(1deg)'">BREAK UI</button>
+    </section>
+
+    <section class="card">
+      <p>
+        This website is designed with the elegance of a 2003 malware popup,
+        the color discipline of a spilled Skittles bag, and the confidence of
+        a C server running on port 8080.
+      </p>
+      <p>
+        Please enjoy the completely unnecessary animations, excessive borders,
+        suspicious buttons, and deeply concerning visual hierarchy.
+      </p>
+    </section>
+  </main>
+
+  <div class="popup">
+    ⚠️ URGENT SYSTEM MESSAGE:<br />
+    Your vibes are critically authenticated.
+  </div>
+
+  <footer class="footer">
+    © 1998-2026 Definitely Real Software Incorporated LLC Enterprise Edition
+  </footer>
+</body>
+</html>
