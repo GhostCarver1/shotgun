@@ -6,10 +6,27 @@
 #include "login.h"
 #include "../helpers/json_helper.h"
 
+/*
+    POST /login 
+    {
+        "email":"example@example.com",
+        "password":"password"
+    }
+    
+    RESPONSE 
+    {
+        "status":"success",
+        "user_name":"user_name",
+        "token_token":"abcedf"
+    }
+
+*/
+
 int handle_login_request(int client_fd, const char * request)
 {
 
     char *body = strstr(request, "\r\n\r\n");
+    
     if (!body) {
         printf("No Body Found in Login Request.\n");
         send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"no body found\"}");
@@ -84,6 +101,7 @@ int handle_login_request(int client_fd, const char * request)
     generate_token(user_account.token);
     hash_token(user_account.token, user_account.token_hash);
 
+
     int db_store_token_status = db_store_hashed_token(conn, &user_account);
 
     db_disconnect(conn);
@@ -101,15 +119,6 @@ int handle_login_request(int client_fd, const char * request)
         return 0;
     }
 
-    /*printf("{\n");
-    printf("    EMAIL: %s\n", user_account.email);
-    printf("    PASSWORD: %s\n", user_account.password);
-    printf("    PASSWORD_HASH: %s\n",user_account.password_hash);
-    printf("    USER_ID: %s\n", user_account.id);
-    printf("    USER_NAME: %s\n", user_account.user_name);
-    printf("    TOKEN: %s\n", user_account.token);
-    printf("    TOKEN_HASH: %s\n", user_account.token_hash);
-    printf("}\n"); */
 
     char response[256];
 
@@ -205,18 +214,29 @@ int generate_token(char token_hex[TOKEN_HEX_LEN])
 
 int hash_token(const char *token_hex, char hash_hex[crypto_generichash_BYTES * 2 + 1])
 {
-    unsigned char hash[crypto_generichash_BYTES];
+   unsigned char hash[crypto_generichash_BYTES];
 
-    crypto_generichash(
+    if (token_hex == NULL || hash_hex == NULL) {
+        return 0;
+    }
+
+    if (crypto_generichash(
+            hash,
+            sizeof(hash),
+            (const unsigned char *)token_hex,
+            strlen(token_hex),
+            NULL,
+            0
+        ) != 0) {
+        return 0;
+    }
+
+    sodium_bin2hex(
+        hash_hex,
+        crypto_generichash_BYTES * 2 + 1,
         hash,
-        sizeof(hash),
-        (const unsigned char *)token_hex,
-        strlen(token_hex),
-        NULL,
-        0
+        sizeof(hash)
     );
-
-    sodium_bin2hex(hash_hex, crypto_generichash_BYTES * 2 + 1, hash, sizeof(hash));
 
     return 1;
 }

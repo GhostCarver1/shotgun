@@ -4,26 +4,26 @@ drop table if exists games;
 drop table if exists tokens;
 
 Create table if not EXISTS games ( 
-    game_id serial Primary key 
+    game_id BIGSERIAL Primary key 
 );
 
 Create table if not EXISTS players (
-    player_id serial Primary key,
+    player_id BIGSERIAL Primary key,
     user_name varchar(255) not null,
     user_email varchar(255) not null,
     user_hash varchar(255) not null
 );
 
 Create table game_players (
-    game_id serial references games(game_id),
-    player_id serial references players(player_id),
+    game_id BIGSERIAL references games(game_id),
+    player_id BIGSERIAL references players(player_id),
     PRIMARY KEY (game_id, player_id)
 );
 
 Create table tokens (
     player_id serial references players(player_id),
     PRIMARY KEY(player_id),
-    token_hash VARCHAR(64),
+    token_hash TEXT NOT NULL,
     token_start TIMESTAMP DEFAULT NOW() not null,
     token_end TIMESTAMP not null
 );

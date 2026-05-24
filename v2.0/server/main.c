@@ -13,6 +13,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "handlers/permission.h"
 
 
 
@@ -172,9 +173,14 @@ void * handle_response(void * arg)
         printf("PROCESSING LOGIN REQUEST\n");
         handle_login_request(client_fd, buffer);
     }
+    else if (strncmp(buffer, "POST /permission ", 17) == 0)
+    {
+        printf("PROCESSING PERMISSION REQUEST\n");
+        handle_permission_request(client_fd, buffer);
+    }
     else {
         printf("Unknown request, sending 404\n");
-        send_response(client_fd, "text/plain", "404 Not Found\n");
+        send_response(client_fd, "application/json", "{\"status\":\"failure\",\"reason\":\"unknown request\"}");
     }
     close(client_fd);
 
@@ -188,32 +194,9 @@ int main()
     setup_webpage();
 }
 
-int handle_permission_request(int client_fd, const char * request)
-{
-    char * body = strstr(request, "\r\n\r\n");
-    if (!body) {
-        printf("No Body Found in Permission Request.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\"}");
-        return 0;
-    }
-    body += 4;
-
-    char token_buffer[TOKEN_HEX_LEN];
-    JsonStatus token_ok = extract_json_value(body, "token", token_buffer, sizeof(token_buffer));
-
-    if (!token_ok)
-    {
-        printf("Could not extract token field from json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\"}");
-        return 0;
-    }
-
-}
-
 
 int handle_signup_request(int client_fd, const char * request)
 {
-
     char *body = strstr(request, "\r\n\r\n");
     if (!body) {
         printf("No Body Found in Login Request.\n");

@@ -1,9 +1,11 @@
 #ifndef LOGIN_H
 #define LOGIN_H
-#include "../main.h"
 
-#define TOKEN_BYTES 32
-#define TOKEN_HEX_LEN (TOKEN_BYTES * 2 + 1)
+#include "../constants.h"
+#include "../../database/database.h"
+
+#include <sodium.h>
+
 
 typedef struct 
 {
