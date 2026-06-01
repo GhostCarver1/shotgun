@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+    <link rel="stylesheet" href="/style.css">
+    <title>Shotgun Games</title>
+    </head>
+    <nav>
+         <a href="/index.html"><button>home</button></a>
+    </nav>
+
+    <form id="permission_form">
+        <label for="user_token">User Token:</label>
+        <input type="text" id="user_token" name="user_token">
+        <label for="user_id">User Id:</label>
+        <input type="text" id="user_id" name="user_id">
+        <br>
+        <input type="submit" value="permission">
+    </form>
+
+
+
+</html>
+
+<script>
+
+const savedUser = localStorage.getItem("user");
+
+if (savedUser) {
+    const userData = JSON.parse(savedUser);
+    document.getElementById("user_id").value = userData.user_id;
+    document.getElementById("user_token").value = userData.user_token;
+}
+
+const permission_form = document.getElementById("permission_form");
+
+permission_form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    const token = document.getElementById("user_token").value;
+    const id = document.getElementById("user_id").value;
+    permission(id,token);
+});
+
+async function permission(id, token) {
+    const response = await fetch("/permission", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: id,
+            token: token
+        })
+    });
+
+    const data = await response.json();
+
+    localStorage.setItem("json_output", JSON.stringify(data));
+
+    alert(data.permission);
+}
+
+
+</script>

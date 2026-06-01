@@ -3,21 +3,23 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <stdio.h>
 #include <sodium.h>
-#include "../database/database.h"
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <pthread.h>
+
 #include "main.h"
-#include "handlers/login.h"
+#include "constants.h"
+
+#include "../database/database.h"
+
 #include "helpers/json_helper.h"
-#include <pthread.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+
+#include "handlers/login.h"
 #include "handlers/permission.h"
+#include "handlers/signup.h"
 
 
-
-#define HASH_SIZE crypto_pwhash_STRBYTES
 
 void send_response(int client_fd, const char *content_type, const char *body)
 {
@@ -65,14 +67,47 @@ void send_file(int client, const char *filename)
     fclose(file);
 }
 
+void send_css(int client, const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        char error[512];
+        snprintf(error, sizeof(error), "File not found :%s\r\n", filename);
+        send_response(client, "text/plain", error);
+        return;
+    }
 
+    char buffer[4096];
+    size_t bytes;
+
+    send(client,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/css\r\n"
+        "\r\n",
+        44, 0);
+
+    while ((bytes = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+        send(client, buffer, bytes, 0);
+    }
+
+    fclose(file);
+}
 
 void setup_server_socket(int *server_fd, struct sockaddr_in * address)
 {
-    * server_fd = socket(AF_INET, SOCK_STREAM,0);
-    if (*server_fd == -1)
-    {
+
+    // CODE SOURCED FROM GEEKS FOR GEEKS ORG
+
+    int new_socket;
+    ssize_t valueread;
+    int opt = 1;
+    socklen_t addrlen = sizeof(address);
+    if ((*server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket failed");
+        exit(EXIT_FAILURE);
+    }
+    if (setsockopt(*server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
+        perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 
@@ -80,24 +115,18 @@ void setup_server_socket(int *server_fd, struct sockaddr_in * address)
     address->sin_addr.s_addr = INADDR_ANY;
     address->sin_port = htons(8080);
 
-    int opt = 1;
-    setsockopt(*server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
      if (bind(*server_fd, (struct sockaddr *)address, sizeof(*address)) < 0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
 
-    if (listen(*server_fd, 10) < 0) {
+    if (listen(*server_fd, 3) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
 
-
-
     printf("Server running on port 8080...\n");
 }
-
 
 int setup_webpage()
 {
@@ -106,7 +135,6 @@ int setup_webpage()
     struct sockaddr_in address;
     int addrlen = sizeof(address);
     
-
     setup_server_socket(&server_fd,&address);
 
     while (1) {
@@ -147,6 +175,7 @@ void * handle_response(void * arg)
     free(arg);
 
     char buffer[4096];
+
     memset(buffer, 0, sizeof(buffer));
 
     ssize_t bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
@@ -155,7 +184,7 @@ void * handle_response(void * arg)
     printf("Bytes read: %zd\n", bytes_read);
     printf("Raw request data:\n%s\n", buffer);
 
-     if (bytes_read <= 0) {
+    if (bytes_read <= 0) {
         if (bytes_read < 0) {
             perror("read");
         }
@@ -165,9 +194,25 @@ void * handle_response(void * arg)
 
     printf("Request: \n%s\n", buffer);
 
+
+
     if (strncmp(buffer, "GET / ", 6) == 0) {
         printf("Serving index.html\n");
         send_file(client_fd, "web/index.html");
+    }
+    else if (strncmp(buffer, "GET /style.css", 14) == 0) {
+        send_css(client_fd, "web/style.css");
+    }
+    else if (strncmp(buffer, "GET /", 5) == 0) 
+    {
+        char file_path[MAX_FILE_PATH];
+        char method[15];
+        snprintf(file_path, sizeof(file_path), "web/");
+        sscanf(buffer, "%15s %255s", method, file_path+3);
+        
+        printf("serving file: %s \n", file_path);
+
+        send_file(client_fd, file_path);
     }
     else if (strncmp(buffer, "POST /login ", 12) == 0) {
         printf("PROCESSING LOGIN REQUEST\n");
@@ -177,6 +222,11 @@ void * handle_response(void * arg)
     {
         printf("PROCESSING PERMISSION REQUEST\n");
         handle_permission_request(client_fd, buffer);
+    }
+    else if (strncmp(buffer, "POST /signup ", 13) == 0)
+    {
+        printf("PROCESSING SIGNUP REQUEST\n");
+        handle_signup_request(client_fd, buffer);
     }
     else {
         printf("Unknown request, sending 404\n");
@@ -194,21 +244,3 @@ int main()
     setup_webpage();
 }
 
-
-int handle_signup_request(int client_fd, const char * request)
-{
-    char *body = strstr(request, "\r\n\r\n");
-    if (!body) {
-        printf("No Body Found in Login Request.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\"}");
-        return 0;
-    }
-    body += 4;
-
-    char email[EMAIL_SIZE] = {0};
-    char password[PASSWORD_SIZE] = {0};
-
-    int email_ok = extract_json_value(body, "email", email, sizeof(email));
-    int password_ok = extract_json_value(body, "password", password, sizeof(password));
-
-}

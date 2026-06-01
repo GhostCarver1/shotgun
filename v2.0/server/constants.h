@@ -1,5 +1,10 @@
 #ifndef CONSTANTS_H
-#define CONSTATNS_H
+#define CONSTANTS_H
+
+#define MAX_REQUEST_SIZE 4096
+#define MAX_RESPONSE_SIZE 256
+
+#define MAX_FILE_PATH 256
 
 #define EMAIL_SIZE 128
 #define PASSWORD_SIZE 128
@@ -12,5 +17,7 @@
 #define HASH_SIZE crypto_pwhash_STRBYTES
 
 #define BIGSERIAL_STRING_LENGTH 21
+
+#define PORT 8080
 
 #endif

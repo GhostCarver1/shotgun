@@ -3,38 +3,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
     <title>Shotgun Games</title>
 </head>
+<nav>
+    <a href="/authentication/login.html"><button>login</button></a>
+    <a href="/authentication/signup.html"><button>signup</button></a>
+    <a href="/authentication/permission.html"><button>permission</button></a>
+</nav>
 <body>
     <h1> SHOTGUN GAMES </h1>
     <h2> Welcome to the Shotgun Game Server! </h2>
 
-    <form id="login_form">
-        <label for="user_email">User Email:</label>
-        <input type="text" id="user_email" name="user_email">
-        <br>
-        <label for="user_password">User Password:</label>
-        <input type="text" id="user_password" name="user_password">
-        <br>
-        <input type="submit" value="login">
-    </form>
-
-    <form id="permission_form">
-        <label for="user_token">User Token:</label>
-        <input type="text" id="user_token" name="user_token">
-        <label for="user_id">User Id:</label>
-        <input type="text" id="user_id" name="user_id">
-        <br>
-        <input type="submit" value="permission">
-    </form>
-
-
 
 
     <h2> USER_NAME :  <span id="user_name"></span></h2>
-
-    <h2> PERMISSION : <span id="user_permission"></span></h2>
+    <h2> USER_ID : <span id="user_id"></span></h2>
+    <h2> USER_TOKEN: <span id="user_token"></span></h2>
 
     <h2> JSON </h2>
     <pre id="json_output"></pre>
@@ -47,6 +32,20 @@
 
 <script>
 
+const jsonOutput = localStorage.getItem("json_output");
+const savedUser = localStorage.getItem("user");
+
+if (savedUser) {
+    const userData = JSON.parse(savedUser);
+    document.getElementById("user_name").innerHTML = userData.user_email;
+    document.getElementById("user_id").innerHTML = userData.user_id;
+    document.getElementById("user_token").innerHTML = userData.user_token;
+}
+
+if (jsonOutput) {
+    document.getElementById("json_output").innerHTML = JSON.stringify(jsonOutput);
+}
+/*
 const login_form = document.getElementById("login_form");
 const permission_form = document.getElementById("permission_form");
 
@@ -132,4 +131,5 @@ async function login(email, password)
     }
 
 }
+*/
 </script>

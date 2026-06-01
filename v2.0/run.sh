@@ -4,7 +4,7 @@ echo "INITIALIZING DATABASE"
 sudo -u postgres psql \
     -d shotgun \
     -f database/init.sql \
-    > /dev/null 2>&1
+    > /dev/null
 
 if [ $? -ne 0 ]; then
     echo "DATABASE INIT FAILED"

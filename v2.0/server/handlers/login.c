@@ -6,22 +6,6 @@
 #include "login.h"
 #include "../helpers/json_helper.h"
 
-/*
-    POST /login 
-    {
-        "email":"example@example.com",
-        "password":"password"
-    }
-    
-    RESPONSE 
-    {
-        "status":"success",
-        "user_name":"user_name",
-        "token_token":"abcedf"
-    }
-
-*/
-
 int handle_login_request(int client_fd, const char * request)
 {
 
@@ -88,7 +72,6 @@ int handle_login_request(int client_fd, const char * request)
         return 0;
     }
 
-    //printf("HASH FROM DB: %s\n", user_account.password_hash);
 
     if (crypto_pwhash_str_verify(user_account.password_hash, user_account.password, strlen(user_account.password)) != 0)
     {
@@ -119,8 +102,10 @@ int handle_login_request(int client_fd, const char * request)
         return 0;
     }
 
+    // Successfully have created the user. now get authentication
 
-    char response[256];
+
+    char response[MAX_RESPONSE_SIZE];
 
     snprintf(response, sizeof(response), "{\"status\":\"success\", \"user_id\":\"%s\", \"user_name\":\"%s\", \"token\":\"%s\"}", user_account.id, user_account.user_name, user_account.token);
     send_response(client_fd, "application/json", response);
