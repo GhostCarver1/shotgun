@@ -6,29 +6,46 @@
     <link rel="stylesheet" href="/style.css">
     <title>Shotgun Games</title>
 </head>
-<nav>
+<table>
+    <tr>
+<auth>
     <a href="/authentication/login.html"><button>login</button></a>
     <a href="/authentication/signup.html"><button>signup</button></a>
     <a href="/authentication/permission.html"><button>permission</button></a>
-</nav>
+    <br>
+    <text>USER_ID : <span id="user_id"></span></text>
+    <br>
+    <text>USER_NAME :  <span id="user_name"></span></text>
+    <br>
+    <text>USER_TOKEN: <span id="user_token"></span></text>
+    <br>
+    <text>PERMISSION: <span id="user_permission"></span></text>
+</auth>
+</tr>
+<tr>
+<json>
+    <h2> JSON </h2>
+    <pre id="json_output"></pre>
+</json>
+</tr>
+
+<table>
+
 <body>
     <h1> SHOTGUN GAMES </h1>
     <h2> Welcome to the Shotgun Game Server! </h2>
+    <button onclick="hardRefresh()">Hard Refresh</button>
 
 
-
-    <h2> USER_NAME :  <span id="user_name"></span></h2>
-    <h2> USER_ID : <span id="user_id"></span></h2>
-    <h2> USER_TOKEN: <span id="user_token"></span></h2>
-
-    <h2> JSON </h2>
-    <pre id="json_output"></pre>
+    
 
 </body>
 </html>
 
 
 
+
+<script src="authentication/authentication.js"></script>
 
 <script>
 
@@ -40,96 +57,18 @@ if (savedUser) {
     document.getElementById("user_name").innerHTML = userData.user_email;
     document.getElementById("user_id").innerHTML = userData.user_id;
     document.getElementById("user_token").innerHTML = userData.user_token;
+
+    permission(userData.user_id,userData.user_token);
 }
 
 if (jsonOutput) {
     document.getElementById("json_output").innerHTML = JSON.stringify(jsonOutput);
 }
-/*
-const login_form = document.getElementById("login_form");
-const permission_form = document.getElementById("permission_form");
 
-login_form.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("user_email").value;
-    const password = document.getElementById("user_password").value;
-
-    login(email, password);
-
-});
-
-permission_form.addEventListener("submit", function(event) {
-    event.preventDefault();
-    const token = document.getElementById("user_token").value;
-    const id = document.getElementById("user_id").value;
-    permission(id,token);
-});
-
-
-
-const savedUser = localStorage.getItem("user");
-
-if (savedUser) {
-    const userData = JSON.parse(savedUser);
-    document.getElementById("user_email").value = userData.user_email;
-    document.getElementById("user_password").value = userData.user_password;
-    document.getElementById("user_token").value = userData.user_token;
-    document.getElementById("user_id").value = userData.user_id;
-}
-
-async function permission(id, token) {
-    const response = await fetch("/permission", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            id: id,
-            token: token
-        })
-    });
-
-    const data = await response.json();
-
-    document.getElementById("json_output").textContent = JSON.stringify(data, null, 2);
-
-    document.getElementById("user_permission").textContent = data.permission;
-}
-
-async function login(email, password)
+function hardRefresh()
 {
-    const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        })
-    });
-
-    const data = await response.json();
-
-    document.getElementById("json_output").textContent = JSON.stringify(data, null, 2);
-
-    if (data.status==="success")
-    {
-        const user = {
-            user_email: email,
-            user_password: password,
-            user_name: data.user_name,
-            user_token: data.token,
-            user_id: data.user_id
-        };
-
-        document.getElementById("user_name").textContent = data.user_name;
-        document.getElementById("user_id").value = data.user_id;
-        document.getElementById("user_token").value = data.token;
-        localStorage.setItem("user", JSON.stringify(user));
-    }
-
+    location.reload();
 }
-*/
+
 </script>
+

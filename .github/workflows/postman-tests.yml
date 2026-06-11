@@ -47,7 +47,7 @@ jobs:
 
       - name: Compile server
         run: |
-           gcc v2.0/server/*.c v2.0/server/handlers/*.c v2.0/server/helpers/*.c v2.0/database/*.c -o shotgun -lpq -lsodium -pthread
+          gcc v2.0/server/*.c v2.0/server/handlers/*.c -o shotgun -lpq -lsodium -pthread
 
       - name: Start server
         run: |

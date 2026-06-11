@@ -31,6 +31,9 @@ void send_response(int client_fd, const char *content_type, const char *body)
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: %s\r\n"
         "Content-Length: %d\r\n"
+        "Cache-Control: no-cache, no-store, must-revalidate\r\n"
+        "Pragma: no-cache\r\n"
+        "Expires: 0\r\n"
         "Connection: close\r\n"
         "\r\n",
         content_type,

@@ -40,24 +40,10 @@ permission_form.addEventListener("submit", function(event) {
     permission(id,token);
 });
 
-async function permission(id, token) {
-    const response = await fetch("/permission", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            id: id,
-            token: token
-        })
-    });
 
-    const data = await response.json();
-
-    localStorage.setItem("json_output", JSON.stringify(data));
-
-    alert(data.permission);
-}
 
 
 </script>
+
+
+<script src="authentication.js"></script>
