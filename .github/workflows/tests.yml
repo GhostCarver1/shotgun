@@ -1,0 +1,34 @@
+name: Build Shotgun
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpq-dev libsodium-dev
+
+      - name: Compile Project
+        run: | 
+          make -f makefile.mk
+
+      - name: Initialize Test Database
+        run: | 
+          sudo service postgresql start
+          sudo -u postgres createdb shotgun
+
+          sudo -u postgres psql -d shotgun -f database/init.sql
+          sudo -u postgres psql -d shotgun -f database/test_init.sql
+          
+
+          

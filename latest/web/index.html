@@ -1,0 +1,74 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/style.css">
+    <title>Shotgun Games</title>
+</head>
+<table>
+    <tr>
+<auth>
+    <a href="/authentication/login.html"><button>login</button></a>
+    <a href="/authentication/signup.html"><button>signup</button></a>
+    <a href="/authentication/permission.html"><button>permission</button></a>
+    <br>
+    <text>USER_ID : <span id="user_id"></span></text>
+    <br>
+    <text>USER_NAME :  <span id="user_name"></span></text>
+    <br>
+    <text>USER_TOKEN: <span id="user_token"></span></text>
+    <br>
+    <text>PERMISSION: <span id="user_permission"></span></text>
+</auth>
+</tr>
+<tr>
+<json>
+    <h2> JSON </h2>
+    <pre id="json_output"></pre>
+</json>
+</tr>
+
+<table>
+
+<body>
+    <h1> SHOTGUN GAMES </h1>
+    <h2> Welcome to the Shotgun Game Server! </h2>
+    <button onclick="hardRefresh()">Hard Refresh</button>
+
+
+    
+
+</body>
+</html>
+
+
+
+
+<script src="authentication/authentication.js"></script>
+
+<script>
+
+const jsonOutput = localStorage.getItem("json_output");
+const savedUser = localStorage.getItem("user");
+
+if (savedUser) {
+    const userData = JSON.parse(savedUser);
+    document.getElementById("user_name").innerHTML = userData.user_email;
+    document.getElementById("user_id").innerHTML = userData.user_id;
+    document.getElementById("user_token").innerHTML = userData.user_token;
+
+    permission(userData.user_id,userData.user_token);
+}
+
+if (jsonOutput) {
+    document.getElementById("json_output").innerHTML = JSON.stringify(jsonOutput);
+}
+
+function hardRefresh()
+{
+    location.reload();
+}
+
+</script>
+
