@@ -26,43 +26,47 @@ jobs:
       - name: Set Environment
         run: |
           set -a
-          source env.run
+          source env.test
           set +a
 
-      - name: Start PostgreSQL
+      - name: Do ./test.sh
         run: |
-          sudo service postgresql start
-          sudo -u postgres createdb shotgun || true
-          sudo -u postgres psql -c "CREATE ROLE shotgun_admin LOGIN PASSWORD 'password';" || true
-          sudo -u postgres createdb shotgun -O shotgun_admin || true
+          ./test.sh
+        
+      # - name: Start PostgreSQL
+      #   run: |
+      #     sudo service postgresql start
+      #     sudo -u postgres createdb shotgun || true
+      #     sudo -u postgres psql -c "CREATE ROLE shotgun_admin LOGIN PASSWORD 'password';" || true
+      #     sudo -u postgres createdb shotgun -O shotgun_admin || true
 
-      - name: Clean build
-        run: |
-          rm -f shotgun
-          make clean || true
+      # - name: Clean build
+      #   run: |
+      #     rm -f shotgun
+      #     make clean || true
 
-      - name: Compile Project
-        run: |
-          make -f makefile.mk
+      # - name: Compile Project
+      #   run: |
+      #     make -f makefile.mk
 
-      - name: Initialize Test Database
-        run: |
-          sudo -u postgres psql -d shotgun -f database/init.sql
-          sudo -u postgres psql -d shotgun -f database/test_init.sql
+      # - name: Initialize Test Database
+      #   run: |
+      #     sudo -u postgres psql -d shotgun -f database/init.sql
+      #     sudo -u postgres psql -d shotgun -f database/test_init.sql
 
-      - name: Start Server
-        run: |
-          ./shotgun > server.log 2>&1 &
-          sleep 5
-          cat server.log
+      # - name: Start Server
+      #   run: |
+      #     ./shotgun > server.log 2>&1 &
+      #     sleep 5
+      #     cat server.log
 
-      - name: Verify Server
-        run: |
-          curl -v http://localhost:8080/
+      # - name: Verify Server
+      #   run: |
+      #     curl -v http://localhost:8080/
 
-      - name: Postman Tests
-        run: |
-          newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+      # - name: Postman Tests
+      #   run: |
+      #     newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
           
           
 
