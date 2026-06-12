@@ -26,10 +26,10 @@ void send_failure(int client_fd, int status_code, const char * reason)
 
     char body[MAX_FAILURE_RESPONSE_SIZE];
 
-    snprintf(body, MAX_FAILURE_RESPONSE_SIZE,"{\"status\":\"failure\", \"reason\":\"%s\"\n}", reason);
+    snprintf(body, MAX_FAILURE_RESPONSE_SIZE,"{\"status\":\"failure\", \"reason\":\"%s\"}", reason);
 
     snprintf(header, sizeof(header),
-        "HTTP/1.1 %d OK\r\n"
+        "HTTP/1.1 %d Error\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: %lu\r\n"
         "Cache-Control: no-cache, no-store, must-revalidate\r\n"
