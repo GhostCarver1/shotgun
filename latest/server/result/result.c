@@ -1,6 +1,6 @@
 # include "result.h"
-
-# include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 Result create_error(ErrorType error_type, int error_code, const char * message)
 {

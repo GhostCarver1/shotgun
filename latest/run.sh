@@ -13,6 +13,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+
+rm -f shotgun
+make clean || true
 make -f makefile.mk
 
 

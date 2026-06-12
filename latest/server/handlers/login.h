@@ -4,6 +4,8 @@
 #include "../constants.h"
 #include "../../database/database.h"
 
+#include "../result/result.h"
+
 #include <sodium.h>
 
 
@@ -19,9 +21,9 @@ typedef struct
 } UserAccount;
 
 int handle_login_request(int client_fd, const char * request);
-int db_load_player_info(PGconn * conn, UserAccount * user_account);
+Result db_load_player_info(PGconn * conn, UserAccount * user_account);
 int hash_token(const char *token_hex, char hash_hex[crypto_generichash_BYTES * 2 + 1]);
 int generate_token(char token_hex[TOKEN_HEX_LEN]);
-DbQueryStatus db_store_hashed_token(PGconn * conn, UserAccount * user_account);
+Result db_store_hashed_token(PGconn * conn, UserAccount * user_account);
 
 #endif
