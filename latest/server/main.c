@@ -235,6 +235,7 @@ void * handle_response(void * arg)
         printf("Unknown request, sending 404\n");
         send_response(client_fd, "application/json", "{\"status\":\"failure\",\"reason\":\"unknown request\"}");
     }
+
     close(client_fd);
 
 
