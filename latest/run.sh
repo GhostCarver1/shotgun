@@ -3,6 +3,12 @@ echo "STARTING UP THE SERVER"
 
 echo "INITIALIZING DATABASE"
 
+set -a
+source env.run
+set +a
+
+sudo service postgresql start
+
 sudo -u postgres psql \
     -d shotgun \
     -f database/init.sql \

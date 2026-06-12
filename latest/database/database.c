@@ -10,12 +10,10 @@
 
 PGconn *db_connect(void)
 {
-    const char *conninfo =
-    "host=localhost "
-    "port=5432 "
-    "dbname=shotgun "
-    "user=shotgun_admin "
-    "password=password";
+    char conninfo[256];
+    
+    snprintf(conninfo, sizeof(conninfo), 
+    "host=%s port=%s dbname=%s user=%s password=%s", getenv("DB_HOST"),getenv("DB_PORT"),getenv("DB_NAME"),getenv("DB_USER"),getenv("DB_PASSWORD"));
 
     PGconn *conn = PQconnectdb(conninfo);
 
