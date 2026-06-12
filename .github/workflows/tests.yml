@@ -42,7 +42,10 @@ jobs:
       - name: Verify Server
         run: |
           curl -v http://localhost:8080/
-          
+
+      - name: Postman Tests
+        run: |
+          newman run postman/shotgun.postman_collection.json --env-var "base_url=http://localhost:8080"
           
           
 
