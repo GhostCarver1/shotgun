@@ -4,3 +4,6 @@ shotgun:
     	-o shotgun \
     	-lpq \
     	-lsodium
+
+clean:
+	rm -f *.o shotgun
