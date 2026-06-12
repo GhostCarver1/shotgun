@@ -63,7 +63,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/login",
+              "raw": "http://localhost:8080/login",
               "protocol": "http",
               "host": [
                 "172",
@@ -133,7 +133,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/login",
+              "raw": "http://localhost:8080/login",
               "protocol": "http",
               "host": [
                 "172",
@@ -203,7 +203,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/login",
+              "raw": "http://localhost:8080/login",
               "protocol": "http",
               "host": [
                 "172",
@@ -266,7 +266,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/login",
+              "raw": "http://localhost:8080/login",
               "protocol": "http",
               "host": [
                 "172",
@@ -302,7 +302,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/signup",
+              "raw": "http://localhost:8080/signup",
               "protocol": "http",
               "host": [
                 "172",
