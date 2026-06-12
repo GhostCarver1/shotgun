@@ -29,6 +29,17 @@ jobs:
 
           sudo -u postgres psql -d shotgun -f database/init.sql
           sudo -u postgres psql -d shotgun -f database/test_init.sql
+
+      - name: Starting up the Server
+        run: |
+          ./shotgun &
+          sleep 5
+
+      - name: Verify Server
+        run: |
+          curl -v http://localhost:8080/
+          
+          
           
 
           
