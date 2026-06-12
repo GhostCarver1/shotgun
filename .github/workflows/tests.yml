@@ -27,6 +27,8 @@ jobs:
         run: |
           sudo service postgresql start
           sudo -u postgres createdb shotgun || true
+          sudo -u postgres psql -c "CREATE ROLE shotgun_admin LOGIN PASSWORD 'password';" || true
+          sudo -u postgres createdb shotgun -O shotgun_admin || true
 
       - name: Clean build
         run: |
