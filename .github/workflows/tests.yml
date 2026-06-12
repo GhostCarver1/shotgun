@@ -22,6 +22,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libpq-dev libsodium-dev
 
+      - name: Clean build
+        run: |
+          rm -f shotgun
+          make clean || true
+
       - name: Compile Project
         run: | 
           make -f makefile.mk
