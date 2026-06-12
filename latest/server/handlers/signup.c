@@ -12,6 +12,7 @@
 #include <inttypes.h>
 #include "login.h"
 #include "signup.h"
+#include "../result/result.h"
 
 /*
     POST /signup
@@ -45,14 +46,23 @@ int handle_signup_request(int client_fd, const char * request)
 
     SignUpRequest signup_request;
 
-    JsonStatus email_ok = extract_json_value(body, "email", signup_request.received_email, USER_NAME_SIZE);
-    JsonStatus user_name_ok = extract_json_value(body, "user_name",signup_request.received_user_name, USER_NAME_SIZE);
-    JsonStatus password_ok = extract_json_value(body, "password", signup_request.received_password, PASSWORD_SIZE);
+    Result extract_email_result = extract_json_value(body, "email", signup_request.received_email, USER_NAME_SIZE);
+    Result extract_user_name_result = extract_json_value(body, "user_name",signup_request.received_user_name, USER_NAME_SIZE);
+    Result extract_password_result = extract_json_value(body, "password", signup_request.received_password, PASSWORD_SIZE);
 
-    if (email_ok!=JSON_SUCCESS||user_name_ok!=JSON_SUCCESS||password_ok!=JSON_SUCCESS)
+    if (extract_email_result.status == ERROR)
     {
-        printf("Could not extract email feild json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"could not extract some feilds of the json\"}");
+        send_failure(client_fd, 400, extract_email_result.message);
+        return 0;
+    }
+    if (extract_user_name_result.status == ERROR)
+    {
+        send_failure(client_fd, 400, extract_user_name_result.message);
+        return 0;
+    }
+    if (extract_password_result.status == ERROR)
+    {
+        send_failure(client_fd, 400, extract_password_result.message);
         return 0;
     }
 
@@ -78,8 +88,6 @@ int handle_signup_request(int client_fd, const char * request)
         send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"player already exists in database\"}");
         return 0;
     }
-
-    
 
     send_response(client_fd, "application/json", "{\"status\":\"success\"}");
 

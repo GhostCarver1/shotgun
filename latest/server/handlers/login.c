@@ -21,27 +21,17 @@ int handle_login_request(int client_fd, const char * request)
 
     UserAccount user_account;
 
-    JsonStatus email_ok = extract_json_value(body, "email", user_account.email, sizeof(user_account.email));
-    JsonStatus password_ok = extract_json_value(body, "password", user_account.password, sizeof(user_account.password));
+    Result extract_email_result = extract_json_value(body, "email", user_account.email, sizeof(user_account.email));
+    Result extract_password_result = extract_json_value(body, "password", user_account.password, sizeof(user_account.password));
 
-    if (email_ok!=JSON_SUCCESS)
+    if (extract_email_result.status == ERROR)
     {
-        printf("Could not extract email feild json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"could not extract email\"}");
-        return 0;
-    }
-    if (password_ok!=JSON_SUCCESS)
-    {
-        printf("Could not extract password field of json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"could not extract password\"}");
-        return 0;
+        send_failure(client_fd, 400, extract_email_result.message);
     }
 
-    if (sodium_init() < 0)
+    if (extract_password_result.status == ERROR)
     {
-        printf("libsodium init failed\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"libsodium init failed\"}");
-        return 0;
+        send_failure(client_fd, 400, extract_password_result.message);
     }
     
 
@@ -58,7 +48,7 @@ int handle_login_request(int client_fd, const char * request)
     if (crypto_pwhash_str_verify(user_account.password_hash, user_account.password, strlen(user_account.password)) != 0)
     {
         printf("Password verification failed.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"password verification failed\"}");
+        send_failure(client_fd, 401, "INCORRECT PASSWORD ");
         db_disconnect(conn);
         return 0;
     }
@@ -69,11 +59,11 @@ int handle_login_request(int client_fd, const char * request)
 
     Result db_store_token_result = db_store_hashed_token(conn, &user_account);
     db_disconnect(conn);
+
     if (db_store_token_result.status!=SUCCESS)
     {
         printf("storing the hashed token in the database failed, reason: %s \n", db_store_token_result.message);
         send_failure(client_fd, 400, db_store_token_result.message);
-        
     }
 
 

@@ -6,13 +6,14 @@
 #include <stdio.h>
 #include <sodium.h>
 #include "json_helper.h"
+#include "../result/result.h"
 
-JsonStatus extract_json_value(const char *json, const char *key,
+Result extract_json_value(const char *json, const char *key,
                        char *output, size_t output_size)
 {
     if (strcmp(json, "{}")==0 || strcmp(json, "{ }") == 0)
     {
-        return JSON_EMPTY;
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_EMPTY, "THE JSON WAS COMPLETELEY EMPTY WHEN TRYING TO GET VALUES ");
     }
     char pattern[64];
 
@@ -22,8 +23,7 @@ JsonStatus extract_json_value(const char *json, const char *key,
 
     if (!start)
     {
-        fprintf(stderr, "Missing JSON key: %s\n", key);
-        return JSON_KEY_MISSING;
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "MISSING JSON KEY: %s ", key);
     }
 
     start += strlen(pattern);
@@ -33,7 +33,7 @@ JsonStatus extract_json_value(const char *json, const char *key,
     if (!end)
     {
         fprintf(stderr, "Malformed JSON for key: %s\n", key);
-        return JSON_MALFORMED;
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "MALFORMED JSON FOR KEY: %s ", key);
     }
 
     size_t value_length = end - start;
@@ -46,5 +46,5 @@ JsonStatus extract_json_value(const char *json, const char *key,
     strncpy(output, start, value_length);
     output[value_length] = '\0';
 
-    return JSON_SUCCESS;
+    return create_success();
 }

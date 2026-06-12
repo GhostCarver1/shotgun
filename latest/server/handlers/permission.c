@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include "login.h"
+#include "../result/result.h"
 
 /*
     POST /permission
@@ -41,21 +42,23 @@ int handle_permission_request(int client_fd, const char * request)
     char received_id[BIGSERIAL_STRING_LENGTH]; 
     char received_token[HASH_SIZE];
 
-    JsonStatus token_ok = extract_json_value(body, "token", received_token, HASH_SIZE);
-    JsonStatus id_ok = extract_json_value(body, "id", received_id, BIGSERIAL_STRING_LENGTH);
+
+    Result extract_token_result = extract_json_value(body, "token", received_token, HASH_SIZE);
+    Result extract_id_result = extract_json_value(body, "id", received_id, BIGSERIAL_STRING_LENGTH);
 
 
 
-    if (!token_ok)
+    if (extract_token_result.status == ERROR)
     {
         printf("Could not extract token field from json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"Could not extract token from json\"}");
+        send_failure(client_fd, 400, extract_token_result.message);
         return 0;
     }
-    if (!id_ok)
+
+    if (extract_id_result.status == ERROR)
     {
         printf("Could not extract token field from json.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"Could not extract token from json\"}");
+        send_failure(client_fd, 400, extract_id_result.message);
         return 0;
     }
 
