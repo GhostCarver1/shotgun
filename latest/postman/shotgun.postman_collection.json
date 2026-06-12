@@ -63,13 +63,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/login",
+              "raw": "{{host}}/login",
               "protocol": "http",
               "host": [
-                "172",
-                "20",
-                "1",
-                "183"
+                "{{host}}"
               ],
               "port": "8080",
               "path": [
@@ -133,13 +130,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/login",
+              "raw": "{{host}}/login",
               "protocol": "http",
               "host": [
-                "172",
-                "20",
-                "1",
-                "183"
+                "{{host}}"
               ],
               "port": "8080",
               "path": [
@@ -203,13 +197,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/login",
+              "raw": "{{host}}/login",
               "protocol": "http",
               "host": [
-                "172",
-                "20",
-                "1",
-                "183"
+                "{{host}}"
               ],
               "port": "8080",
               "path": [
@@ -266,13 +257,10 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/login",
+              "raw": "{{host}}/login",
               "protocol": "http",
               "host": [
-                "172",
-                "20",
-                "1",
-                "183"
+                "{{host}}"
               ],
               "port": "8080",
               "path": [
@@ -302,17 +290,14 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/signup",
+              "raw": "{{host}}/signup",
               "protocol": "http",
               "host": [
-                "172",
-                "20",
-                "1",
-                "183"
+                "{{host}}"
               ],
               "port": "8080",
               "path": [
-                "signup"
+                "login"
               ]
             }
           },

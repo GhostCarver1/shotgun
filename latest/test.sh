@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "STARTING UP THE SERVER"
+ECHO 
 
 echo "INITIALIZING DATABASE"
 
@@ -23,6 +23,15 @@ fi
 
 echo "PROGRAM COMPILED"
 echo "RUNNING THE SERVER"
-./shotgun
+
+#./shotgun &
+#SERVER_PID=$!
+
+echo "Server PID: $SERVER_PID"
+
+newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+
+echo "KILLING SERVER"
+kill $SERVER_PID
 
 
