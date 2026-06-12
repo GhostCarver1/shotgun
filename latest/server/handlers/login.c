@@ -73,7 +73,7 @@ int handle_login_request(int client_fd, const char * request)
     {
         printf("storing the hashed token in the database failed, reason: %s \n", db_store_token_result.message);
         send_failure(client_fd, 400, db_store_token_result.message);
-
+        
     }
 
 
@@ -109,15 +109,11 @@ Result db_store_hashed_token(PGconn * conn, UserAccount * user_account)
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         PQclear(res);
-        char message[MAX_ERROR_MESSAGE_LENGTH];
-        snprintf(message, sizeof(message), "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, message);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
     }
     if (PQntuples(res) == 0) {
-        char message[MAX_ERROR_MESSAGE_LENGTH];
-        snprintf(message, sizeof(message), "Unable to insert token hash into database: %s\n", user_account->email);
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,message);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to insert token hash into database: %s\n", user_account->email);
     }
 
     PQclear(res);
@@ -138,17 +134,13 @@ Result db_load_player_info(PGconn * conn, UserAccount * user_account)
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        char message[MAX_ERROR_MESSAGE_LENGTH];
-        snprintf(message, sizeof(message), "get player info failed: %s\n", PQerrorMessage(conn));
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID,message);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID,"get player info failed: %s\n", PQerrorMessage(conn));
     }
 
     if (PQntuples(res) == 0) {
-        char message[MAX_ERROR_MESSAGE_LENGTH];
-        snprintf(message, sizeof(message), "No player found with email: %s ", user_account->email);
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,message);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"No player found with email: %s ", user_account->email);
     }
 
     strncpy(user_account->password_hash, PQgetvalue(res,0,0),crypto_pwhash_STRBYTES - 1);

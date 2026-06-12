@@ -1,8 +1,9 @@
 # include "result.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
-Result create_error(ErrorType error_type, int error_code, const char * message)
+Result create_error(ErrorType error_type, int error_code, const char * format, ...)
 {
     Result error;
 
@@ -14,6 +15,10 @@ Result create_error(ErrorType error_type, int error_code, const char * message)
     {
         error.code.database = error_code;
     } 
+    else if (error.type == ERROR_TYPE_JSON)
+    {
+        error.code.json = error_code;
+    }
     else 
     {
         fprintf(stderr, "\n THE ERROR TYPE YOU USED DOES NOT EXIST IN THE ERROR TYPE ENUM. \n");
@@ -21,7 +26,16 @@ Result create_error(ErrorType error_type, int error_code, const char * message)
         abort();   
     }
 
-    snprintf(error.message, sizeof(error.message), "%s", message);
+    va_list args;
+
+    va_start(args, format);
+
+    vsnprintf(
+        error.message,
+        sizeof(error.message),
+        format,
+        args);
+
 
     return error;
 }
