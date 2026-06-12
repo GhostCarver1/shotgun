@@ -17,8 +17,6 @@ void send_css(int client, const char *filename);
 void setup_server_socket(int *server_fd, struct sockaddr_in * address);
 void send_response(int client_fd, const char *content_type, const char *body);
 int setup_webpage();
-int extract_json_value(const char *json, const char *key,
-                       char *output, size_t output_size);
 int main();
 void * handle_response(void * arg);
 

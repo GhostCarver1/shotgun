@@ -270,6 +270,7 @@ void * handle_response(void * arg)
 
 int main()
 {
+    sodium_init();
     setup_webpage();
 }
 

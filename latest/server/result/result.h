@@ -5,8 +5,8 @@
 
 typedef enum
 {
-    SUCCESS,
-    ERROR
+    SUCCESS = 1,
+    ERROR = 0
 } Status;
 
 typedef enum
