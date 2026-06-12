@@ -22,6 +22,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql postgresql-contrib libpq-dev libsodium-dev nodejs npm
           sudo npm install -g newman
+          
+      - name: Set Environment
+        run: |
+          set -a
+          source env.test
+          set +a
 
       - name: Start PostgreSQL
         run: |
