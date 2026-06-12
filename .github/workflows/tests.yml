@@ -26,7 +26,7 @@ jobs:
       - name: Set Environment
         run: |
           set -a
-          source env.test
+          source env.run
           set +a
 
       - name: Start PostgreSQL
