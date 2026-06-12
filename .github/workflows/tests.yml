@@ -45,7 +45,7 @@ jobs:
 
       - name: Postman Tests
         run: |
-          newman run postman/shotgun.postman_collection.json --env-var "base_url=http://localhost:8080"
+          newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
           
           
 
