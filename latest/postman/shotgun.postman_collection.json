@@ -38,6 +38,7 @@
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
                   "});",
+                  "console.log(\"REQUEST:\", pm.request.body.raw);",
                   "console.log(\"STATUS:\", pm.response.code);",
                   "console.log(\"BODY:\", pm.response.text());"
                 ],
@@ -107,6 +108,7 @@
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
                   "});",
+                  "console.log(\"REQUEST:\", pm.request.body.raw);",
                   "console.log(\"STATUS:\", pm.response.code);",
                   "console.log(\"BODY:\", pm.response.text());"
                 ],
@@ -176,6 +178,7 @@
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
                   "});",
+                  "console.log(\"REQUEST:\", pm.request.body.raw);",
                   "console.log(\"STATUS:\", pm.response.code);",
                   "console.log(\"BODY:\", pm.response.text());"
                 ],
