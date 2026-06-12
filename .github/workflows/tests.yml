@@ -20,7 +20,13 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpq-dev libsodium-dev
+          sudo apt-get install -y postgresql postgresql-contrib libpq-dev libsodium-dev nodejs npm
+          sudo npm install -g newman
+
+      - name: Start PostgreSQL
+        run: |
+          sudo service postgresql start
+          sudo -u postgres createdb shotgun || true
 
       - name: Clean build
         run: |
@@ -28,21 +34,19 @@ jobs:
           make clean || true
 
       - name: Compile Project
-        run: | 
+        run: |
           make -f makefile.mk
 
       - name: Initialize Test Database
-        run: | 
-          sudo service postgresql start
-          sudo -u postgres createdb shotgun
-
+        run: |
           sudo -u postgres psql -d shotgun -f database/init.sql
           sudo -u postgres psql -d shotgun -f database/test_init.sql
 
-      - name: Starting up the Server
+      - name: Start Server
         run: |
-          ./shotgun &
+          ./shotgun > server.log 2>&1 &
           sleep 5
+          cat server.log
 
       - name: Verify Server
         run: |
