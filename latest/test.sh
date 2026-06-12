@@ -24,8 +24,8 @@ fi
 echo "PROGRAM COMPILED"
 echo "RUNNING THE SERVER"
 
-#./shotgun &
-#SERVER_PID=$!
+./shotgun &
+SERVER_PID=$!
 
 echo "Server PID: $SERVER_PID"
 
