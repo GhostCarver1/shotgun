@@ -37,7 +37,9 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "console.log(\"STATUS:\", pm.response.code);",
+                  "console.log(\"BODY:\", pm.response.text());"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -104,7 +106,9 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "console.log(\"STATUS:\", pm.response.code);",
+                  "console.log(\"BODY:\", pm.response.text());"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -171,7 +175,9 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "console.log(\"STATUS:\", pm.response.code);",
+                  "console.log(\"BODY:\", pm.response.text());"
                 ],
                 "type": "text/javascript",
                 "packages": {},
