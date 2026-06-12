@@ -22,14 +22,36 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libpq-dev libsodium-dev
 
-      - name: Start PostgreSQL
+      - name: Clean build
         run: |
+          rm -f shotgun
+          make clean || true
+
+      - name: Compile Project
+        run: | 
+          make -f makefile.mk
+
+      - name: Initialize Test Database
+        run: | 
           sudo service postgresql start
-          sudo -u postgres psql -c "CREATE DATABASE shotgun;"
-          
-      - name: Run test.shotgun
+          sudo -u postgres createdb shotgun
+
+          sudo -u postgres psql -d shotgun -f database/init.sql
+          sudo -u postgres psql -d shotgun -f database/test_init.sql
+
+      - name: Starting up the Server
         run: |
-          ./test.sh
+          ./shotgun &
+          sleep 5
+
+      - name: Verify Server
+        run: |
+          curl -v http://localhost:8080/
+
+      - name: Postman Tests
+        run: |
+          newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+          
           
 
           
