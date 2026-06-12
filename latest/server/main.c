@@ -20,6 +20,31 @@
 #include "handlers/signup.h"
 
 
+void send_failure(int client_fd, int status_code, const char * reason)
+{
+    char header[512];
+
+    char body[MAX_FAILURE_RESPONSE_SIZE];
+
+    snprintf(body, "{\"status\":\"failure\", \"reason\":\"%s\"}", reason);
+
+    snprintf(header, sizeof(header),
+        "HTTP/1.1 %d OK\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: %d\r\n"
+        "Cache-Control: no-cache, no-store, must-revalidate\r\n"
+        "Pragma: no-cache\r\n"
+        "Expires: 0\r\n"
+        "Connection: close\r\n"
+        "\r\n",
+        status_code,
+        strlen(body)
+    );
+
+    write(client_fd, header, strlen(header));
+    write(client_fd, body, strlen(body));
+    
+}
 
 void send_response(int client_fd, const char *content_type, const char *body)
 {

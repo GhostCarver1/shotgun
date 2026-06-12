@@ -11,6 +11,7 @@
 #define ID_SIZE 32
 
 void send_response(int client, const char *content_type, const char *body);
+void send_failure(int client_fd, int status_code, const char * reason);
 void send_file(int client, const char *filename);
 void send_css(int client, const char *filename);
 void setup_server_socket(int *server_fd, struct sockaddr_in * address);

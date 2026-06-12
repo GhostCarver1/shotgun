@@ -5,6 +5,7 @@
 #include <string.h>
 #include "login.h"
 #include "../helpers/json_helper.h"
+#include "result.h"
 
 int handle_login_request(int client_fd, const char * request)
 {
@@ -46,30 +47,11 @@ int handle_login_request(int client_fd, const char * request)
 
     PGconn *conn = db_connect();
     
-    int db_load_player_info_status = db_load_player_info(conn, &user_account);
-
-    
-
-    if (db_load_player_info_status==DB_EMPTY)
+    Result db_load_player_info_result = db_load_player_info(conn, &user_account);
+    if (db_load_player_info_result.status!=SUCCESS)
     {
-        printf("Database returned a empty list\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"user email not found\"}");
-        db_disconnect(conn);
-        return 0;
-    }
-    if (db_load_player_info_status==DB_QUERY_INVALID)
-    {
-        printf("There was a syntax error in the query\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"query syntax error\"}");
-        db_disconnect(conn);
-        return 0;
-    }
-    if (user_account.password_hash[0] == '\0')
-    {
-        printf("User not found in database.\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"user not found\"}");
-        db_disconnect(conn);
-        return 0;
+        printf("storing the hashed token in the database failed, reason: %s \n", db_load_player_info_result.message);
+        send_failure(client_fd, 400, db_load_player_info_result.message);
     }
 
 
@@ -85,24 +67,14 @@ int handle_login_request(int client_fd, const char * request)
     hash_token(user_account.token, user_account.token_hash);
 
 
-    int db_store_token_status = db_store_hashed_token(conn, &user_account);
-
+    Result db_store_token_result = db_store_hashed_token(conn, &user_account);
     db_disconnect(conn);
-
-    if (db_store_token_status == DB_EMPTY)
+    if (db_store_token_result.status!=SUCCESS)
     {
-        printf("token returned as empty from the database\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"no found token returned from database\"}");
-        return 0;
-    }
-    if (db_store_token_status == DB_QUERY_INVALID)
-    {
-        printf("There was some syntax error with the database when inserting a token\n");
-        send_response(client_fd, "application/json", "{\"status\":\"failure\", \"reason\":\"invalid query when inserting a token\"}");
-        return 0;
-    }
+        printf("storing the hashed token in the database failed, reason: %s \n", db_store_token_result.message);
+        send_failure(client_fd, 400, db_store_token_result.message);
 
-    // Successfully have created the user. now get authentication
+    }
 
 
     char response[MAX_RESPONSE_SIZE];
@@ -114,7 +86,7 @@ int handle_login_request(int client_fd, const char * request)
 
 }
 
-DbQueryStatus db_store_hashed_token(PGconn * conn, UserAccount * user_account)
+Result db_store_hashed_token(PGconn * conn, UserAccount * user_account)
 {
     const char *sql =
         "INSERT INTO tokens (player_id, token_hash, token_start, token_end) "
@@ -136,22 +108,23 @@ DbQueryStatus db_store_hashed_token(PGconn * conn, UserAccount * user_account)
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        fprintf(stderr, "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
         PQclear(res);
-        return DB_QUERY_INVALID;
+        char message[MAX_ERROR_MESSAGE_LENGTH];
+        snprintf(message, sizeof(message), "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, message);
     }
     if (PQntuples(res) == 0) {
-        fprintf(stderr, "Unable to insert token hash into database: %s\n", user_account->email);
+        char message[MAX_ERROR_MESSAGE_LENGTH];
+        snprintf(message, sizeof(message), "Unable to insert token hash into database: %s\n", user_account->email);
         PQclear(res);
-        return DB_EMPTY;
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,message);
     }
 
     PQclear(res);
-    return DB_SUCCESS;
-
+    return create_success();
 }
 
-DbQueryStatus db_load_player_info(PGconn * conn, UserAccount * user_account)
+Result db_load_player_info(PGconn * conn, UserAccount * user_account)
 {
     const char *sql = 
         "SELECT user_hash, player_id, user_name from players where user_email = ($1);";
@@ -165,15 +138,17 @@ DbQueryStatus db_load_player_info(PGconn * conn, UserAccount * user_account)
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        fprintf(stderr, "get player info failed: %s\n", PQerrorMessage(conn));
+        char message[MAX_ERROR_MESSAGE_LENGTH];
+        snprintf(message, sizeof(message), "get player info failed: %s\n", PQerrorMessage(conn));
         PQclear(res);
-        return DB_QUERY_INVALID;
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID,message);
     }
 
     if (PQntuples(res) == 0) {
-        fprintf(stderr, "No player found with email: %s\n", user_account->email);
+        char message[MAX_ERROR_MESSAGE_LENGTH];
+        snprintf(message, sizeof(message), "No player found with email: %s\n", PQerrorMessage(conn));
         PQclear(res);
-        return DB_EMPTY;
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,message);
     }
 
     strncpy(user_account->password_hash, PQgetvalue(res,0,0),crypto_pwhash_STRBYTES - 1);
@@ -184,7 +159,7 @@ DbQueryStatus db_load_player_info(PGconn * conn, UserAccount * user_account)
     user_account->user_name[USER_NAME_SIZE - 1] = '\0';
 
     PQclear(res);
-    return DB_SUCCESS;
+    return create_success();
 }
 
 int generate_token(char token_hex[TOKEN_HEX_LEN])
