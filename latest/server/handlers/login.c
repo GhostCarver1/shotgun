@@ -146,7 +146,7 @@ Result db_load_player_info(PGconn * conn, UserAccount * user_account)
 
     if (PQntuples(res) == 0) {
         char message[MAX_ERROR_MESSAGE_LENGTH];
-        snprintf(message, sizeof(message), "No player found with email: %s\n", PQerrorMessage(conn));
+        snprintf(message, sizeof(message), "No player found with email: %s ", user_account->email);
         PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,message);
     }

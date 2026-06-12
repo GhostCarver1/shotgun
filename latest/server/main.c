@@ -26,7 +26,7 @@ void send_failure(int client_fd, int status_code, const char * reason)
 
     char body[MAX_FAILURE_RESPONSE_SIZE];
 
-    snprintf(body, strlen(body),"{\"status\":\"failure\", \"reason\":\"%s\"}", reason);
+    snprintf(body, MAX_FAILURE_RESPONSE_SIZE,"{\"status\":\"failure\", \"reason\":\"%s\"\n}", reason);
 
     snprintf(header, sizeof(header),
         "HTTP/1.1 %d OK\r\n"

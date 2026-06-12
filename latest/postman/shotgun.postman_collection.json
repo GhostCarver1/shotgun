@@ -37,10 +37,7 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "console.log(\"REQUEST:\", pm.request.body.raw);",
-                  "console.log(\"STATUS:\", pm.response.code);",
-                  "console.log(\"BODY:\", pm.response.text());"
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -58,7 +55,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\":\"alice@example.com\",\n    \"password\":\"amicable\"\n}\n",
+              "raw": "{\n    \"email\":\"alice@example.com\",\n    \"password\":\"amicable\"   \n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -66,7 +63,7 @@
               }
             },
             "url": {
-              "raw": "{{host}}/login",
+              "raw": "http://{{host}}:8080/login",
               "protocol": "http",
               "host": [
                 "{{host}}"
@@ -107,10 +104,7 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "console.log(\"REQUEST:\", pm.request.body.raw);",
-                  "console.log(\"STATUS:\", pm.response.code);",
-                  "console.log(\"BODY:\", pm.response.text());"
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -136,7 +130,7 @@
               }
             },
             "url": {
-              "raw": "{{host}}/login",
+              "raw": "http://{{host}}:8080/login",
               "protocol": "http",
               "host": [
                 "{{host}}"
@@ -177,10 +171,7 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "console.log(\"REQUEST:\", pm.request.body.raw);",
-                  "console.log(\"STATUS:\", pm.response.code);",
-                  "console.log(\"BODY:\", pm.response.text());"
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -206,7 +197,7 @@
               }
             },
             "url": {
-              "raw": "{{host}}/login",
+              "raw": "http://{{host}}:8080/login",
               "protocol": "http",
               "host": [
                 "{{host}}"
@@ -226,8 +217,8 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "pm.test(\"Status code is NOT 200\", function () {",
+                  "    pm.response.to.not.have.status(200);",
                   "});",
                   "",
                   "pm.test(\"Response time is under 2000ms\", function () {",
@@ -266,7 +257,7 @@
               }
             },
             "url": {
-              "raw": "{{host}}/login",
+              "raw": "http://{{host}}:8080/login",
               "protocol": "http",
               "host": [
                 "{{host}}"
@@ -291,7 +282,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"user_name\": \"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -299,20 +290,26 @@
               }
             },
             "url": {
-              "raw": "{{host}}/signup",
+              "raw": "http://{{host}}:8080/signup",
               "protocol": "http",
               "host": [
                 "{{host}}"
               ],
               "port": "8080",
               "path": [
-                "login"
+                "signup"
               ]
             }
           },
           "response": []
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": ""
     }
   ]
 }
