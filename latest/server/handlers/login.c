@@ -27,11 +27,13 @@ int handle_login_request(int client_fd, const char * request)
     if (extract_email_result.status == ERROR)
     {
         send_failure(client_fd, 400, extract_email_result.message);
+        return 0;
     }
 
     if (extract_password_result.status == ERROR)
     {
         send_failure(client_fd, 400, extract_password_result.message);
+        return 0;
     }
     
 
@@ -42,6 +44,7 @@ int handle_login_request(int client_fd, const char * request)
     {
         printf("storing the hashed token in the database failed, reason: %s \n", db_load_player_info_result.message);
         send_failure(client_fd, 400, db_load_player_info_result.message);
+        return 0;
     }
 
 
@@ -64,6 +67,7 @@ int handle_login_request(int client_fd, const char * request)
     {
         printf("storing the hashed token in the database failed, reason: %s \n", db_store_token_result.message);
         send_failure(client_fd, 400, db_store_token_result.message);
+        return 0;
     }
 
 
