@@ -17,3 +17,8 @@ Insert into game_players (game_id, player_id) values
 (2, 3),
 (3, 1),
 (3, 3);
+
+GRANT CONNECT ON DATABASE shotgun_test TO shotgun_admin;
+GRANT USAGE ON SCHEMA public TO shotgun_admin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO shotgun_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO shotgun_admin;
