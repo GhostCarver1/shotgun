@@ -13,7 +13,7 @@ Result extract_json_value(const char *json, const char *key,
 {
     if (strcmp(json, "{}")==0 || strcmp(json, "{ }") == 0)
     {
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_EMPTY, "THE JSON WAS COMPLETELEY EMPTY WHEN TRYING TO GET VALUES ");
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_EMPTY, "THE JSON WAS COMPLETELEY EMPTY WHEN TRYING TO GET VALUES");
     }
     char pattern[64];
 
@@ -23,7 +23,7 @@ Result extract_json_value(const char *json, const char *key,
 
     if (!start)
     {
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "MISSING JSON KEY: %s ", key);
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "MISSING JSON KEY: %s", key);
     }
 
     start += strlen(pattern);
@@ -33,7 +33,7 @@ Result extract_json_value(const char *json, const char *key,
     if (!end)
     {
         fprintf(stderr, "Malformed JSON for key: %s\n", key);
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "MALFORMED JSON FOR KEY: %s ", key);
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "MALFORMED JSON FOR KEY: %s", key);
     }
 
     size_t value_length = end - start;

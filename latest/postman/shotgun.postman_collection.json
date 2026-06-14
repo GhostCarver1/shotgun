@@ -55,7 +55,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\":\"alice@example.com\",\n    \"password\":\"amicable\"   \n}\n",
+              "raw": "{\n    \"email\":\"alice@example.com\", \n    \"password\":\"amicable\"\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -255,6 +255,183 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "incorrect Passowrd",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"alice@example.com\",\n    \"password\":\"amicabl\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\":\"amicabl\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"alice@example.com\"\n}\n"
             },
             "url": {
               "raw": "http://{{host}}:8080/login",
