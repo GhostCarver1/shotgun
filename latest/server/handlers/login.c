@@ -19,10 +19,12 @@ int handle_login_request(int client_fd, const char * request)
     }
     body += 4;
 
-    UserAccount user_account;
+    LoginRequest login_request;
+    LoginContext login_context;
+    LoginResponse login_response;
 
-    Result extract_email_result = extract_json_value(body, "email", user_account.email, sizeof(user_account.email));
-    Result extract_password_result = extract_json_value(body, "password", user_account.password, sizeof(user_account.password));
+    Result extract_email_result = extract_json_value(body, "email", login_request.email, sizeof(login_request.email));
+    Result extract_password_result = extract_json_value(body, "password", login_request.password, sizeof(login_request.password));
 
     if (extract_email_result.status == ERROR)
     {
@@ -35,52 +37,49 @@ int handle_login_request(int client_fd, const char * request)
         send_failure(client_fd, 400, extract_password_result.message);
         return 0;
     }
-    
 
     PGconn *conn = db_connect();
-    
-    Result db_load_player_info_result = db_load_player_info(conn, &user_account);
-    if (db_load_player_info_result.status!=SUCCESS)
-    {
-        printf("storing the hashed token in the database failed, reason: %s \n", db_load_player_info_result.message);
-        send_failure(client_fd, 400, db_load_player_info_result.message);
-        return 0;
-    }
-
-
-    if (crypto_pwhash_str_verify(user_account.password_hash, user_account.password, strlen(user_account.password)) != 0)
-    {
-        printf("Password verification failed.\n");
-        send_failure(client_fd, 401, "INCORRECT PASSWORD ");
-        db_disconnect(conn);
-        return 0;
-    }
-
-    generate_token(user_account.token);
-    hash_token(user_account.token, user_account.token_hash);
-
-
-    Result db_store_token_result = db_store_hashed_token(conn, &user_account);
+    Result gather_login_context_result = db_gather_login_context(conn, &login_request, &login_context);
     db_disconnect(conn);
 
-    if (db_store_token_result.status!=SUCCESS)
+    if (gather_login_context_result.status!=SUCCESS)
     {
-        printf("storing the hashed token in the database failed, reason: %s \n", db_store_token_result.message);
-        send_failure(client_fd, 400, db_store_token_result.message);
+        printf("gathering login context result failed: %s \n", gather_login_context_result.message);
+        send_failure(client_fd, 400, gather_login_context_result.message);
         return 0;
     }
 
+    if (crypto_pwhash_str_verify(login_context.db_password_hash, login_request.password, strlen(login_request.password)) != 0)
+    {
+        printf("Password verification failed.\n");
+        send_failure(client_fd, 401, "INCORRECT PASSWORD");
+        return 0;
+    }
+
+    generate_token(login_response.token);
+    hash_token(login_response.token, login_context.db_token_hash);
+
+    conn = db_connect();
+    Result db_store_hashed_token_result = db_store_hashed_token(conn,login_context.id,login_context.db_token_hash);
+    db_disconnect(conn);
+
+    if (db_store_hashed_token_result.status!=SUCCESS)
+    {
+        printf("storing the hashed token in the database failed, reason: %s \n", db_store_hashed_token_result.message);
+        send_failure(client_fd, 400, db_store_hashed_token_result.message);
+        return 0;
+    }
 
     char response[MAX_RESPONSE_SIZE];
 
-    snprintf(response, sizeof(response), "{\"status\":\"success\", \"user_id\":\"%s\", \"user_name\":\"%s\", \"token\":\"%s\"}", user_account.id, user_account.user_name, user_account.token);
+    snprintf(response, sizeof(response), "{\"status\":\"success\", \"user_id\":\"%s\", \"user_name\":\"%s\", \"token\":\"%s\"}", login_context.id, login_context.user_name, login_response.token);
     send_response(client_fd, "application/json", response);
 
     return 1;
 
 }
 
-Result db_store_hashed_token(PGconn * conn, UserAccount * user_account)
+Result db_store_hashed_token(PGconn * conn, const char * id, const char * token_hash)
 {
     const char *sql =
         "INSERT INTO tokens (player_id, token_hash, token_start, token_end) "
@@ -93,8 +92,8 @@ Result db_store_hashed_token(PGconn * conn, UserAccount * user_account)
         "RETURNING player_id;";
 
     const char *params[2] = {
-        user_account->id,
-        user_account->token_hash
+        id,
+        token_hash
     };
 
     PGresult *res = PQexecParams(
@@ -107,21 +106,18 @@ Result db_store_hashed_token(PGconn * conn, UserAccount * user_account)
     }
     if (PQntuples(res) == 0) {
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to insert token hash into database: %s\n", user_account->email);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to insert token hash into database: %s\n", id);
     }
 
     PQclear(res);
     return create_success();
 }
 
-Result db_load_player_info(PGconn * conn, UserAccount * user_account)
+Result db_gather_login_context(PGconn * conn, const LoginRequest * login_request, LoginContext * login_context)
 {
-    const char *sql = 
-        "SELECT user_hash, player_id, user_name from players where user_email = ($1);";
-    
-    const char *params[1] = {
-        user_account->email
-    };
+    const char *sql = "SELECT user_hash, player_id, user_name from players where user_email = ($1);";
+
+    const char *params[1] = {login_request->email};
 
     PGresult *res = PQexecParams(
         conn,sql,1,NULL,params,NULL,NULL,0
@@ -134,18 +130,18 @@ Result db_load_player_info(PGconn * conn, UserAccount * user_account)
 
     if (PQntuples(res) == 0) {
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"No player found with email: %s ", user_account->email);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"No player found with email: %s ", login_request->email);
     }
 
-    strncpy(user_account->password_hash, PQgetvalue(res,0,0),crypto_pwhash_STRBYTES - 1);
-    strncpy(user_account->id, PQgetvalue(res,0,1), ID_SIZE - 1);
-    strncpy(user_account->user_name, PQgetvalue(res,0,2), USER_NAME_SIZE - 1);
-    user_account->password_hash[crypto_pwhash_STRBYTES - 1] = '\0';
-    user_account->id[ID_SIZE - 1] = '\0';
-    user_account->user_name[USER_NAME_SIZE - 1] = '\0';
+    strncpy(login_context->db_password_hash, PQgetvalue(res,0,0),crypto_pwhash_STRBYTES - 1);
+    strncpy(login_context->id, PQgetvalue(res,0,1), ID_SIZE - 1);
+    strncpy(login_context->user_name, PQgetvalue(res,0,2), USER_NAME_SIZE - 1);
+    login_context->db_password_hash[crypto_pwhash_STRBYTES - 1] = '\0';
+    login_context->id[ID_SIZE - 1] = '\0';
+    login_context->user_name[USER_NAME_SIZE - 1] = '\0';
 
-    PQclear(res);
     return create_success();
+
 }
 
 int generate_token(char token_hex[TOKEN_HEX_LEN])
