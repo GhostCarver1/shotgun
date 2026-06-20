@@ -37,7 +37,7 @@ permission_form.addEventListener("submit", function(event) {
     event.preventDefault();
     const token = document.getElementById("user_token").value;
     const id = document.getElementById("user_id").value;
-    permission(id,token);
+    permission(id,token,silent=false);
 });
 
 
