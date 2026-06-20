@@ -1,5 +1,5 @@
 shotgun:
-	gcc server/main.c tests/*.c server/result/*.c server/handlers/*.c server/helpers/*.c database/database.c \
+	gcc server/main.c tests/*.c server/result/*.c server/handlers/authentication/*.c server/helpers/*.c database/database.c \
     	-I/usr/include/postgresql \
     	-o shotgun \
     	-lpq \

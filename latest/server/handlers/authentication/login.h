@@ -1,11 +1,17 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include "../constants.h"
-#include "../../database/database.h"
+#include "../../constants.h"
+#include "../../../database/database.h"
+#include "../../result/result.h"
+#include "../../helpers/json_helper.h"
+#include "../../main.h"
 
-#include "../result/result.h"
-
+#include <stdbool.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include <string.h>
 #include <sodium.h>
 
 typedef struct

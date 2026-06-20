@@ -15,9 +15,9 @@
 
 #include "helpers/json_helper.h"
 
-#include "handlers/login.h"
-#include "handlers/permission.h"
-#include "handlers/signup.h"
+#include "handlers/authentication/permission.h"
+#include "handlers/authentication/signup.h"
+#include "handlers/authentication/login.h"
 
 
 void send_failure(int client_fd, int status_code, const char * reason)

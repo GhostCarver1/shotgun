@@ -32,7 +32,7 @@ async function login(email, password)
 
 }
 
-async function permission(id, token) {
+async function permission(id, token, silent=true) {
     const response = await fetch("/permission", {
         method: "POST",
         headers: {
@@ -48,7 +48,11 @@ async function permission(id, token) {
 
     localStorage.setItem("json_output", JSON.stringify(data));
 
+    if(!silent) alert(data.permission);
+
     document.getElementById("user_permission").innerHTML = data.permission;
+
+
     
 }
 
