@@ -35,8 +35,6 @@ Result create_error(ErrorType error_type, int error_code, const char * format, .
         sizeof(error.message),
         format,
         args);
-
-
     return error;
 }
 

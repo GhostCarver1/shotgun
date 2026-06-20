@@ -31,21 +31,19 @@ int handle_permission_request(int client_fd, const char * request)
     PermissionContext permission_context;
     PermissionResponse permission_response;
 
-    Result extract_token_result = extract_json_value(body, "token", permission_request.token, HASH_SIZE);
-    Result extract_id_result = extract_json_value(body, "id", permission_request.user_id, BIGSERIAL_STRING_LENGTH);
+    JsonFeild json_feilds[] = {
+        FIELD(token, permission_request),
+        FIELD(user_id, permission_request)
+    };
 
-    if (extract_token_result.status == ERROR)
+    Result extracting_json_feilds_result = extract_json_feilds(body, json_feilds, 2);
+
+    if (extracting_json_feilds_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, extract_token_result.message);
+        send_failure(client_fd, 400, extracting_json_feilds_result.message);
         return 0;
     }
 
-    if (extract_id_result.status == ERROR)
-    {
-        send_failure(client_fd, 400, extract_id_result.message);
-        return 0;
-    }
-    
     PGconn *conn = db_connect();
     Result db_get_token_information_status = db_get_token_information(conn, &permission_request, &permission_context, &permission_response);
     db_disconnect(conn);
