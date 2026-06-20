@@ -48,3 +48,18 @@ Result extract_json_value(const char *json, const char *key,
 
     return create_success();
 }
+
+
+
+Result extract_json_feilds(const char *json, JsonFeild * json_feilds, size_t count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        Result result = extract_json_value(json, json_feilds[i].key, json_feilds[i].output, json_feilds[i].output_size);
+        if (result.status==ERROR)
+        {
+            return result;
+        }
+    }
+    return create_success();
+}

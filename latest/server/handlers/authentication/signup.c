@@ -36,23 +36,17 @@ int handle_signup_request(int client_fd, const char * request)
     SignUpContext signup_context;
     SignUpResponse signup_response;
 
-    Result extract_email_result = extract_json_value(body, "email", signup_request.email, USER_NAME_SIZE);
-    Result extract_user_name_result = extract_json_value(body, "user_name",signup_request.user_name, USER_NAME_SIZE);
-    Result extract_password_result = extract_json_value(body, "password", signup_request.password, PASSWORD_SIZE);
+    JsonFeild json_feilds[] = {
+        FIELD(email, signup_request),
+        FIELD(password, signup_request),
+        FIELD(user_name, signup_request)
+    };
 
-    if (extract_email_result.status == ERROR)
+    Result extracting_json_feilds_result = extract_json_feilds(body, json_feilds, 2);
+
+    if (extracting_json_feilds_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, extract_email_result.message);
-        return 0;
-    }
-    if (extract_user_name_result.status == ERROR)
-    {
-        send_failure(client_fd, 400, extract_user_name_result.message);
-        return 0;
-    }
-    if (extract_password_result.status == ERROR)
-    {
-        send_failure(client_fd, 400, extract_password_result.message);
+        send_failure(client_fd, 400, extracting_json_feilds_result.message);
         return 0;
     }
 

@@ -18,20 +18,19 @@ int handle_login_request(int client_fd, const char * request)
     LoginContext login_context;
     LoginResponse login_response;
 
-    Result extract_email_result = extract_json_value(body, "email", login_request.email, sizeof(login_request.email));
-    Result extract_password_result = extract_json_value(body, "password", login_request.password, sizeof(login_request.password));
+    JsonFeild json_feilds[] = {
+        FIELD(email, login_request),
+        FIELD(password, login_request)
+    };
 
-    if (extract_email_result.status == ERROR)
+    Result extracting_json_feilds_result = extract_json_feilds(body, json_feilds, 2);
+
+    if (extracting_json_feilds_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, extract_email_result.message);
+        send_failure(client_fd, 400, extracting_json_feilds_result.message);
         return 0;
     }
 
-    if (extract_password_result.status == ERROR)
-    {
-        send_failure(client_fd, 400, extract_password_result.message);
-        return 0;
-    }
 
     PGconn *conn = db_connect();
     Result gather_login_context_result = db_gather_login_context(conn, &login_request, &login_context);
