@@ -42,7 +42,7 @@ int handle_signup_request(int client_fd, const char * request)
         FIELD(user_name, signup_request)
     };
 
-    Result extracting_json_feilds_result = extract_json_feilds(body, json_feilds, 2);
+    Result extracting_json_feilds_result = extract_json_feilds(body, json_feilds, 3);
 
     if (extracting_json_feilds_result.status != SUCCESS)
     {

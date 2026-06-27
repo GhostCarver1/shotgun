@@ -29,13 +29,13 @@ int handle_post_game_request(int client_fd, const char * request)
         return 0;
     }
 
-    Result extracting_names_result = extract_json_list_of_strings(body, "player_name", pgrequest.player_names, MAX_PLAYERS, MAX_NAME_LENGTH);
+    /*Result extracting_names_result = extract_json_list_of_strings(body, "player_name", pgrequest.player_names, MAX_PLAYERS, MAX_NAME_LENGTH);
 
     if (extracting_names_result.status != SUCCESS)
     {
         send_failure(client_fd, 400, extracting_names_result.message);
         return 0;
-    }  
+    }  */
 
     //printf("player:%s\n", pgrequest.player_names[0]);
 
