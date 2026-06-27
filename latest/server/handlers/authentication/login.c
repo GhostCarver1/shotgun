@@ -1,7 +1,6 @@
 
 #include "login.h"
 
-
 int handle_login_request(int client_fd, const char * request)
 {
 
