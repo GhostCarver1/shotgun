@@ -32,7 +32,26 @@ sudo -u postgres psql -d shotgun_test -f database/init.sql > /dev/null
 echo "POPULATING DATABASE WITH TEST VALUES"
 sudo -u postgres psql -d shotgun_test -f database/test_init.sql > /dev/null
 
-echo "REBUILDING RUN FILES AND COMPILING"
+echo "REBUILDING TEST FILES AND RUNNING"
+
+make rebuild_test || true
+
+if [ $? -ne 0 ]; then
+    echo "COMPILE FAILED"
+    exit 1
+fi
+
+echo "TEST COMPILED SUCCESSFULLY"
+
+echo "RUNNING UNIT TESTS"
+
+if ./test; then
+    echo "Tests passed"
+else
+    echo "Tests failed"
+fi
+
+echo "REBUILDING RUN FILES AND RUNNING"
 
 make rebuild || true
 
@@ -43,11 +62,11 @@ fi
 
 echo "PROGRAM COMPILED"
 
-echo "RUNNING UNIT TESTS"
+
 
 echo "RUNNING THE SERVER IN THE BACKGROUND"
 
-./shotgun &
+./shotgun 1 &
 SERVER_PID=$!
 
 echo "SERVER PID: $SERVER_PID"

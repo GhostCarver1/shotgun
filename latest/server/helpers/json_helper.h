@@ -18,6 +18,8 @@ typedef struct {
 Result extract_json_value(const char *json, const char *key,
                        char *output, size_t output_size);
 
+Result extract_json_list_of_strings(const char *json, const char *key, size_t list_size, size_t buffer_size, char output[list_size][buffer_size]);
+
 Result extract_json_feilds(const char *json, JsonFeild * json_feilds, size_t count);
 
 

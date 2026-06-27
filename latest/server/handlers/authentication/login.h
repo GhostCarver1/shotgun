@@ -5,7 +5,7 @@
 #include "../../../database/database.h"
 #include "../../result/result.h"
 #include "../../helpers/json_helper.h"
-#include "../../main.h"
+#include "../../sender.h"
 
 #include <stdbool.h>
 #include <stdint.h>
