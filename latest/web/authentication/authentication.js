@@ -39,7 +39,7 @@ async function permission(id, token, silent=true) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            id: id,
+            user_id: id,
             token: token
         })
     });

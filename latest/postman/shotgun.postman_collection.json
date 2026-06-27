@@ -37,7 +37,14 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                  "if (token) {",
+                  "    pm.environment.set(\"alice_token\", token);",
+                  "    pm.environment.set(\"alice_user_id\", json.user_id);",
+                  "}"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -104,7 +111,14 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                  "if (token) {",
+                  "    pm.environment.set(\"bob_token\", token);",
+                  "    pm.environment.set(\"bob_user_id\", json.user_id);",
+                  "}"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -122,7 +136,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\":\"bob@example.com\",\n    \"password\":\"benevolent\"\n}\n",
+              "raw": "{\n    \"email\":\"bob@example.com\",\n    \"password\":\"benevolent\"\n}\n\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -171,7 +185,14 @@
                   "pm.test(\"Response does not expose the password\", function () {",
                   "    const json = pm.response.json();",
                   "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});"
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                  "if (token) {",
+                  "    pm.environment.set(\"charlie_token\", token);",
+                  "    pm.environment.set(\"charlie_user_id\", json.user_id);",
+                  "}"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -479,6 +500,230 @@
             }
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "Game",
+      "item": [
+        {
+          "name": "Justin Copy",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"token\":\"Justin\",\r\n    \"id\":\"justin@example.com\",\r\n    \"player_name\":[\"Bob\",\"Charlie\",\"alice\"]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/games",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "games"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Permission",
+      "item": [
+        {
+          "name": "Alice Permission",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"user_id\":\"{{alice_user_id}}\",\"token\":\"{{alice_token\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/permission",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "permission"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bob Permission",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"user_id\":\"{{bob_user_id}}\",\"token\":\"{{bob_token}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/permission",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "permission"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Charlie Permission",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"user_id\":\"{{charlie_user_id}}\",\"token\":\"{{charlie_token}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/permission",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "permission"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Complex",
+      "item": [
+        {
+          "name": "Creating a new user",
+          "item": [
+            {
+              "name": "SignUp Bradley",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"user_name\":\"Bradley\",\r\n    \"email\":\"bradley@example.com\",\r\n    \"password\":\"brave\"\r\n}\r\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/signup",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login Bradley",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;\r",
+                      "if (token) {\r",
+                      "    pm.environment.set(\"bradley_token\", token);\r",
+                      "    pm.environment.set(\"bradley_user_id\", json.user_id);\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"bradley@example.com\",\n    \"password\":\"brave\"\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/login",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Permission Bradley",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"user_id\":\"{{bradley_user_id}}\",\"token\":\"{{bradley_token}}\"}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/permission",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "permission"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }
