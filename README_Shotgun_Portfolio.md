@@ -4,12 +4,14 @@
   <em>A multiplayer game backend written in C with custom HTTP routing, PostgreSQL-backed authentication, token validation, and automated API testing.</em>
 </p>
 
+
+
 <p align="center">
-  <img src="screenshots/home-page.png" alt="Shotgun Game Server Home Page" width="800">
+<img width="2372" height="1340" alt="image" src="https://github.com/user-attachments/assets/d600108b-770b-4ca4-b26c-8fbd3fb77e72" />
 </p>
 
 <p align="center">
-  <em>Screenshot placeholder: add a home page, login page, or API demo screenshot here.</em>
+  <img width="2372" height="1340" alt="image" src="https://github.com/user-attachments/assets/05f821b8-013c-4451-9b8a-23fa676a688f" />
 </p>
 
 ---
