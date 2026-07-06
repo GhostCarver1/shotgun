@@ -504,39 +504,6 @@
       ]
     },
     {
-      "name": "Game",
-      "item": [
-        {
-          "name": "Justin Copy",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"token\":\"Justin\",\r\n    \"id\":\"justin@example.com\",\r\n    \"player_name\":[\"Bob\",\"Charlie\",\"alice\"]\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/games",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "8080",
-              "path": [
-                "games"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "Permission",
       "item": [
         {

@@ -19,20 +19,23 @@
 typedef struct
 {
     char token[TOKEN_HEX_LEN];
-    char id[ID_SIZE];
-    char *player_names[MAX_PLAYERS];
+    char user_id[ID_SIZE];
+    char player_ids[MAX_PLAYERS][ID_SIZE];
+    
 } PGRequest;
 
 typedef struct
 {
-    
+    size_t players;
 } PGContext;
 
 typedef struct
 {
-
+    char game_id[ID_SIZE];
 } PGResponse;
 
 int handle_post_game_request(int client_fd, const char * request);
-
+Result db_reserve_game_id(PGconn * conn, char game_id[ID_SIZE]);
+//Result db_connect_game_id_to_player_ids(PGconn * conn, char game_id[ID_SIZE], char player_ids[MAX_PLAYERS][ID_SIZE], int player_count);
+//Result db_connect_game_id_to_player_id(PGconn * conn, char game_id[ID_SIZE], char player_id[ID_SIZE]);
 #endif

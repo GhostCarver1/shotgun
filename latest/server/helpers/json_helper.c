@@ -59,6 +59,7 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
 
     snprintf(pattern, sizeof(pattern), "\"%s\":[\"", key);
 
+
     char *abs_start = strstr(json, pattern);
     char *abs_end = strchr(abs_start, ']');
 
@@ -78,13 +79,10 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
     char *end;
     int index = 0;
 
+
     while (index < list_size)
     {
         char *end = strchr(start, '"');
-
-        printf("start: %s \n", start);
-        printf("end: %s \n", end);
-
 
         if (!end)
         {

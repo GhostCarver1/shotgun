@@ -1,6 +1,8 @@
 #ifndef LOGIC_CONSTANTS_H
 #define LOGIC_CONSTANTS_H
 
+#include "../server/constants.h"
+
 #define MAX_PLAYERS 10
 #define MAX_NAME_LENGTH 256
 #define MAX_LIVES 3
@@ -11,4 +13,5 @@
 #define MAX_PLAYER_INPUT 50
 #define MAX_NOTE_COUNT 10
 #define MAX_NOTE_TEXT_LENGTH 100
+
 #endif
