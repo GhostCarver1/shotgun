@@ -8,6 +8,11 @@
 #include "json_helper.h"
 #include "../result/result.h"
 
+int is_letter(char character)
+{
+    return character<=122 && character>=48;
+}
+
 Result extract_json_value(const char *json, const char *key,
                        char *output, size_t output_size)
 {
@@ -40,7 +45,7 @@ Result extract_json_value(const char *json, const char *key,
 
     if (value_length >= output_size)
     {
-        value_length = output_size - 1;
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "THE BUFFER WAS TO SMALL TO FIT THE ENTRY");
     }
 
     strncpy(output, start, value_length);
@@ -51,60 +56,94 @@ Result extract_json_value(const char *json, const char *key,
 
 Result extract_json_list_of_strings(const char *json, const char *key, size_t list_size, size_t buffer_size, char output[list_size][buffer_size])
 {
-    if (strcmp(json, "{}")==0 || strcmp(json, "{ }") == 0)
+
+    //json has to be exactly \"key\"":["%s","%s",...] or will fail
+
+    //first, make all the outputs safe by null terminating them all
+
+    printf("HERE 1 \n");
+    for (int i = 0; i < list_size; i++)
     {
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_EMPTY, "THE JSON WAS COMPLETELEY EMPTY WHEN TRYING TO GET VALUES");
+        output[i][buffer_size-1] = '\0';
+        output[i][0] = '\0';
     }
+
+    printf("HERE 2 \n");
+
     char pattern[64];
-
-    snprintf(pattern, sizeof(pattern), "\"%s\":[\"", key);
-
-
+    snprintf(pattern, sizeof(pattern), "\"%s\":[", key);
     char *abs_start = strstr(json, pattern);
-    char *abs_end = strchr(abs_start, ']');
-
-    if (!abs_start)
+    if (abs_start==NULL)
     {
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "MISSING JSON KEY: %s", key);
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "COULD NOT FIND THE PATTERN \':\"%s\":[\' \n", key);
     }
-
     abs_start += strlen(pattern);
+    
+    char *abs_end = strstr(abs_start, "]");
 
-    if (!abs_start)
+    if (abs_end==NULL)
     {
-        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "MALFORMED KEY: %s", key);
-    }   
-
-    char *start = abs_start;
-    char *end;
-    int index = 0;
-
-
-    while (index < list_size)
-    {
-        char *end = strchr(start, '"');
-
-        if (!end)
-        {
-            fprintf(stderr, "Malformed JSON for key: %s\n", key);
-            return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "MALFORMED JSON FOR KEY: %s", key);
-        }
-        
-        if (end-start >= buffer_size)
-        {
-            fprintf(stderr, "Buffer Size could not fit the entire stirng: %s\n", key);
-            return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "TO BIG TO FIT INTO THE BUFFER: %s", key);
-        }
-        
-        strncpy(output[index], start, end-start);
-        output[index++][end-start] = '\0';
-
-        start = strchr(end+1, '"');
-
-        if (!start)
-            break;
-        start++;
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_KEY_MISSING, "COULD NOT FIND CLOSING BRACKET FOR KEY %s \n", key);
     }
+
+    // if the '[   ]' is empty then dont continue
+
+    if (abs_start == abs_end)
+    {
+        return create_success();
+    }
+
+
+
+    // check to see if the array is empty
+
+    abs_start += 1;
+
+    printf("HERE 4 \n");
+
+
+    int end = 0;
+    int index = 0;
+    while(index < list_size && !end)
+    {
+        int i;
+        for (i=0;i<buffer_size && is_letter(abs_start[i]); i++)
+        {
+            if (i == buffer_size - 1)
+            {
+                return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "ONE OF THE BUFFERS WAS TO SMALL TO FIT ONE OF THE ENTRIES");
+            }
+            output[index][i] = abs_start[i];
+        }
+        output[index][i] = '\0';
+
+
+        if (abs_start[i]!='"')
+        {
+            return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "UNESPECTED CHARACTER AT THE END OF JSON LIST: '%c' is not character paranthases",abs_start[i]);
+        }
+        
+        if (abs_start[i+1]==']')
+        {
+            end = 1;
+            break;
+        }
+        if (abs_start[i+1]==','&&abs_start[i+2]=='"')
+        {
+            abs_start += (i+3);
+            index++;
+        }
+        else 
+        {
+            return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "UNESPECTED CHARACTER AT THE END OF JSON LIST %c%c",abs_start[i+2],abs_start[i+3]);
+        }
+        if (index == list_size)
+        {
+             return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "NUMBER OF STRINGS DETECTED IS TO MUCH FOR THE BUFFER TO HANDLE \n");
+        }
+    }
+
+    printf("HERE 5 \n");
 
     return create_success();
 
