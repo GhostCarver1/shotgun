@@ -45,10 +45,11 @@ echo "TEST COMPILED SUCCESSFULLY"
 
 echo "RUNNING UNIT TESTS"
 
-if ./test; then
-    echo "Tests passed"
+if ! ./test; then
+    echo "TESTS FAILED"
+    exit
 else
-    echo "Tests failed"
+    echo "TESTS PASSED"
 fi
 
 echo "REBUILDING RUN FILES AND RUNNING"
