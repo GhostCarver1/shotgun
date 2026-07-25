@@ -46,6 +46,7 @@ int handle_post_game_request(int client_fd, const char * request)
     }
 
     PGconn * conn = db_connect();
+
     Result reserve_game_id_result = db_reserve_game_id(conn, pgresponse.game_id);
     if (reserve_game_id_result.status != SUCCESS)
     {
@@ -53,14 +54,14 @@ int handle_post_game_request(int client_fd, const char * request)
         return 0;
     } 
 
-
     Result reserver = db_connect_game_to_player_ids(conn, player_count, pgresponse.game_id, pgrequest.player_ids);
-
     if (reserver.status != SUCCESS)
     {
         send_failure(client_fd, 400, reserver.message);
         return 0;
     } 
+
+    db_disconnect(conn);
 
     char response[MAX_RESPONSE_SIZE];
     snprintf(response, sizeof(response), "{\"status\":\"success\", \"game_id\":\"%s\"}", pgresponse.game_id);

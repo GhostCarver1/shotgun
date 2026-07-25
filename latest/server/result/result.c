@@ -38,6 +38,7 @@ Result create_error(ErrorType error_type, int error_code, const char * format, .
     return error;
 }
 
+
 Result create_success()
 {
     Result success;

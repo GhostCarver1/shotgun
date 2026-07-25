@@ -211,6 +211,10 @@ void * handle_response(void * arg)
     else if (strncmp(buffer, "GET /style.css", 14) == 0) {
         send_css(client_fd, "web/style.css");
     }
+    else if (strncmp(buffer, "QUERY /game", 9) == 0) {
+        printf("PROCESSING query GAME REQUEST\n");
+        handle_query_game_request(client_fd, buffer);
+    }
     else if (strncmp(buffer, "GET /", 5) == 0) 
     {
         char file_path[MAX_FILE_PATH];
