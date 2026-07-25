@@ -5,6 +5,7 @@
 
 typedef enum
 {
+    WARNING = 2,
     SUCCESS = 1,
     ERROR = 0
 } Status;

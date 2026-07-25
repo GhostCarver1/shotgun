@@ -4,6 +4,16 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <sodium.h>
+#include "json_helper.h"
+#include "../result/result.h"
+#include "../../database/database.h"
 
 #include "../result/result.h"
 

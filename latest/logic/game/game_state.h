@@ -16,4 +16,6 @@ typedef struct {
     char player_ids[MAX_PLAYERS][ID_SIZE];
 } GameState;
 
+
+
 #endif

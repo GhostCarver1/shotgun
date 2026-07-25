@@ -6,6 +6,7 @@
 #include "../../result/result.h"
 #include "../../helpers/json_helper.h"
 #include "../../sender.h"
+#include "../../helpers/db_helper.h"
 
 #include <stdbool.h>
 #include <stdint.h>
