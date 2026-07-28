@@ -1,5 +1,5 @@
-#ifndef GET_GAME_H
-#define GET_GAME_H
+#ifndef DELETE_GAME_H
+#define DELETE_GAME_H
 
 #include "../../constants.h"
 #include "../../../database/database.h"
@@ -20,24 +20,19 @@ typedef struct
 {
     char game_id[ID_SIZE];
     char token[TOKEN_HEX_LEN];
-} QGRequest;
+} DGRequest;
 
 typedef struct
 {
     
-} QGContext;
+} DGContext;
 
 typedef struct
 {
-   char game_id[ID_SIZE];
-   char player_ids[MAX_PLAYERS][ID_SIZE];
-   int player_count;
-} QGResponse;
 
+} DGResponse;
 
-int handle_query_game_request(int client_fd, const char * request);
-Result db_query_game(PGconn * conn, const char game_id[ID_SIZE], QGResponse * qgresponse);
-
-
+int handle_delete_game_request(int client_fd, const char * request);
+Result db_set_game_inactive(PGconn * conn, const char game_id[ID_SIZE]);
 
 #endif

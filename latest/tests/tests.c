@@ -86,8 +86,6 @@ int test_json_string_extractor_4()
     char buffer[4][10];
     Result result = extract_json_list_of_strings(json, "pl", 4, 10, buffer);
 
-    printf("ERROR CODE %s \n" , result.message);
-
     return assert_equal_status(result.status, SUCCESS);
 }
 
