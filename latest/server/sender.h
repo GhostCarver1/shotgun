@@ -25,6 +25,7 @@
 #include "handlers/authentication/login.h"
 #include "handlers/games/post_game.h"
 #include "handlers/games/query_game.h"
+#include "handlers/games/delete_game.h"
 
 void send_response(int client, const char *content_type, const char *body);
 void send_failure(int client_fd, int status_code, const char * reason);

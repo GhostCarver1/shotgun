@@ -211,10 +211,6 @@ void * handle_response(void * arg)
     else if (strncmp(buffer, "GET /style.css", 14) == 0) {
         send_css(client_fd, "web/style.css");
     }
-    else if (strncmp(buffer, "QUERY /game", 9) == 0) {
-        printf("PROCESSING query GAME REQUEST\n");
-        handle_query_game_request(client_fd, buffer);
-    }
     else if (strncmp(buffer, "GET /", 5) == 0) 
     {
         char file_path[MAX_FILE_PATH];
@@ -244,6 +240,15 @@ void * handle_response(void * arg)
     {
         printf("PROCESSING POST GAMES\n");
         handle_post_game_request(client_fd,buffer);
+    }
+    else if (strncmp(buffer, "DELETE /game", 12)==0)
+    {
+        printf("PROCESSING DELETE GAME REQUEST\n");
+        handle_delete_game_request(client_fd, buffer);
+    }
+    else if (strncmp(buffer, "QUERY /game", 11) == 0) {
+        printf("PROCESSING QUERY GAME REQUEST\n");
+        handle_query_game_request(client_fd, buffer);
     }
     else {
         printf("Unknown request, sending 404\n");

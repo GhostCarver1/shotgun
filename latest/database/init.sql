@@ -4,7 +4,8 @@
 --drop table if exists players;
 
 Create table if not EXISTS games ( 
-    game_id BIGSERIAL Primary key 
+    game_id BIGSERIAL Primary key,
+    active BOOLEAN DEFAULT TRUE
 );
 
 Create table if not EXISTS players (

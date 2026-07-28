@@ -53,14 +53,11 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
 
     //first, make all the outputs safe by null terminating them all
 
-    printf("HERE 1 \n");
     for (int i = 0; i < list_size; i++)
     {
         output[i][buffer_size-1] = '\0';
         output[i][0] = '\0';
     }
-
-    printf("HERE 2 \n");
 
     char pattern[64];
     snprintf(pattern, sizeof(pattern), "\"%s\":[", key);
@@ -90,8 +87,6 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
     // check to see if the array is empty
 
     abs_start += 1;
-
-    printf("HERE 4 \n");
 
 
     int end = 0;
@@ -134,8 +129,6 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
              return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "NUMBER OF STRINGS DETECTED IS TO MUCH FOR THE BUFFER TO HANDLE \n");
         }
     }
-
-    printf("HERE 5 \n");
 
     return create_success();
 
