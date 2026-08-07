@@ -55,12 +55,12 @@ Result db_set_game_inactive(PGconn * conn, const char game_id[ID_SIZE])
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_INVALID, "Query invalid for deleteing game: %s\n", PQerrorMessage(conn));
+        return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_INVALID, "Query invalid for deleteing game: %s", PQerrorMessage(conn));
     }
 
     if (PQntuples(res) == 0) {
         PQclear(res);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to find game in database to delete: %s\n", game_id);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to find game in database to delete: %s", game_id);
     }
 
     return create_success();

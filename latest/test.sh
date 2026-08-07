@@ -32,63 +32,51 @@ sudo -u postgres psql -d shotgun_test -f database/init.sql > /dev/null
 echo "POPULATING DATABASE WITH TEST VALUES"
 sudo -u postgres psql -d shotgun_test -f database/test_init.sql > /dev/null
 
-echo "REBUILDING TEST FILES AND RUNNING"
+echo "REBUILDING TEST FILES AND REGULAR FILES AND RUNNING"
 
 make rebuild_test || true
-
 if [ $? -ne 0 ]; then
-    echo "COMPILE FAILED"
+    echo "TEST COMPILE FAILED"
     exit 1
 fi
-
-echo "TEST COMPILED SUCCESSFULLY"
-
-echo "RUNNING UNIT TESTS"
-
-if ! ./test; then
-    echo "TESTS FAILED"
-    exit
-else
-    echo "TESTS PASSED"
-fi
-
-echo "REBUILDING RUN FILES AND RUNNING"
 
 make rebuild || true
-
 if [ $? -ne 0 ]; then
-    echo "COMPILE FAILED"
+    echo "MAIN COMPILE FAILED"
     exit 1
 fi
 
-echo "PROGRAM COMPILED"
+echo "PROGRAM TEST AND MAIN COMPILED"
 
+if [[ ${1:-0} -ge 1 ]]; then
+    echo "RUNNING UNIT TESTS"
+    if ! ./test; then
+        echo "TESTS FAILED"
+        exit
+    else
+        echo "TESTS PASSED"
+    fi
+fi
 
+if [[ ${1:-0} -ge 2  ]]; then
+    echo "STARTING UP THE SERVER"
+    ./shotgun 1 & SERVER_PID=$!
+    echo "SERVER PID: $SERVER_PID"
+fi
 
-echo "RUNNING THE SERVER IN THE BACKGROUND"
+if [[ ${1:-0} -ge 3  ]]; then
+    echo "COMPLETING POSTMAN FAST TESTS"
+    sleep 2
+    newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+fi
 
-./shotgun 1 &
-SERVER_PID=$!
+if [[ ${1:-0} -ge 4  ]]; then
+    echo "COMPLETING POSTMAN SLOW TESTS"
+    sleep 2
+    newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+fi
 
-echo "SERVER PID: $SERVER_PID"
-
-echo "LETTING THE SERVER WAKE UP BEFORE POSTMAN TESTS"
-
-sleep 1
-echo "."
-sleep 1
-echo "."
-sleep 1
-echo "."
-sleep 1
-echo "."
-sleep 1
-
-echo "RUNNING POSTMAN TESTS"
-
-newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
-
-if [[ "$1" == "1" ]]; then
+if [[ ${2:-0} -ge 1  ]]; then
     echo "NOT KILLING THE SERVER"
 else 
     echo "KILLING SERVER"

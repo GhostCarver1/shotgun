@@ -69,12 +69,12 @@ Result db_query_game(PGconn * conn, const char game_id[ID_SIZE], QGResponse * qg
 
     if (PQresultStatus(res1) != PGRES_TUPLES_OK) {
         PQclear(res1);
-        return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_INVALID, "Query invalid for quering game: %s\n", PQerrorMessage(conn));
+        return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_INVALID, "Query invalid for quering game: %s", PQerrorMessage(conn));
     }
 
     if (PQntuples(res1) == 0) {
         PQclear(res1);
-        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to find game in database: %s\n", game_id);
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to find game in database: %s", game_id);
     }
 
     strncpy(qgresponse->game_id, PQgetvalue(res1,0,0),ID_SIZE - 1);

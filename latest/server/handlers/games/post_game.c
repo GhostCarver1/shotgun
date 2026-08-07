@@ -47,6 +47,14 @@ int handle_post_game_request(int client_fd, const char * request)
 
     PGconn * conn = db_connect();
 
+    /*
+    Result ensure_players_exist_result = db_ensure_existance_players(conn, pgrequest.player_ids);
+    if (ensure_players_exist_result.status != SUCCESS)
+    {
+        send_failure(client_fd, 400, ensure_players_exist_result.message);
+        return 0;
+    } */
+
     Result reserve_game_id_result = db_reserve_game_id(conn, pgresponse.game_id);
     if (reserve_game_id_result.status != SUCCESS)
     {
@@ -139,6 +147,11 @@ Result db_connect_game_to_player_ids(PGconn * conn, int player_count, char game_
 
     return create_success();
 
+}
+
+Result db_ensure_existance_players(PGconn * conn, char player_ids[MAX_PLAYERS][ID_SIZE])
+{
+    
 }
 
 int get_player_count(char player_ids[MAX_PLAYERS][ID_SIZE])
