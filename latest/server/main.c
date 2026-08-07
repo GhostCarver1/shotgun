@@ -21,7 +21,8 @@
 
 int main(int argc, char ** argv)
 {
-    sodium_init();
+    if (sodium_init())
+        exit(EXIT_FAILURE);
     setup_webpage();
 }
 
