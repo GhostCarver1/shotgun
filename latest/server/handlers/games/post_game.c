@@ -47,13 +47,12 @@ int handle_post_game_request(int client_fd, const char * request)
 
     PGconn * conn = db_connect();
 
-    /*
-    Result ensure_players_exist_result = db_ensure_existance_players(conn, pgrequest.player_ids);
+    Result ensure_players_exist_result = db_ensure_existance_players(conn, player_count, pgrequest.player_ids);
     if (ensure_players_exist_result.status != SUCCESS)
     {
         send_failure(client_fd, 400, ensure_players_exist_result.message);
         return 0;
-    } */
+    } 
 
     Result reserve_game_id_result = db_reserve_game_id(conn, pgresponse.game_id);
     if (reserve_game_id_result.status != SUCCESS)
@@ -149,9 +148,56 @@ Result db_connect_game_to_player_ids(PGconn * conn, int player_count, char game_
 
 }
 
-Result db_ensure_existance_players(PGconn * conn, char player_ids[MAX_PLAYERS][ID_SIZE])
+Result db_ensure_existance_players(PGconn * conn, int player_count, char player_ids[MAX_PLAYERS][ID_SIZE])
 {
+    int buffer_size = 100 + 32 * player_count;
+    char sql[buffer_size];
+    sql[buffer_size-1] = '\0';
+
+    strncpy(sql, "select count(*) from players where player_id IN (", buffer_size);
+
+    int used = 49;
+
+    for (int i = 0; i < player_count; i++)
+    {
+        char temp_string[20];
+        int written = snprintf(temp_string, 20, "$%d,",(i+1));
+        memcpy(sql + used, temp_string, written);
+        used += written;
+    }
+
+    strncpy(sql+used-1, ");", buffer_size-used-1);
+    used+=5;
+
+    printf("SQL: %s \n", sql);
+
+    const char *params[player_count];
+
+    for (int i = 0; i < player_count; i++)
+    {
+        params[i] = player_ids[i];
+    }
+
+    PGresult *res = PQexecParams(
+        conn,sql,player_count,NULL,params,NULL,NULL,0
+    );
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Reservering game id invalid: %s\n", PQerrorMessage(conn));
+    }
+    if (PQntuples(res) == 0) {
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to reserve game into:  %s\n", PQerrorMessage(conn));
+    }
+
+    int found_players = atoi(PQgetvalue(res,0,0));
+    printf("PLAYERS: %d \n", found_players);
+
+    if (found_players!=player_count)
+    {
+        return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID,"One of the player id entered does not exist");
+    }
     
+    return create_success();
 }
 
 int get_player_count(char player_ids[MAX_PLAYERS][ID_SIZE])
