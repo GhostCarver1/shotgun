@@ -6,7 +6,7 @@ int is_letter(char character)
 }
 
 Result extract_json_value(const char *json, const char *key,
-                       char *output, size_t output_size)
+                       char *output, size_t output_size, size_t min_size)
 {
     if (strcmp(json, "{}")==0 || strcmp(json, "{ }") == 0)
     {
@@ -40,8 +40,14 @@ Result extract_json_value(const char *json, const char *key,
         return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "THE BUFFER WAS TO SMALL TO FIT THE ENTRY");
     }
 
+    if (value_length <= min_size)
+    {
+        return create_error(ERROR_TYPE_JSON, ERROR_CODE_JSON_MALFORMED, "THE FEILD ENTRY WAS TOO SMALL");
+    }
+
     strncpy(output, start, value_length);
     output[value_length] = '\0';
+
 
     return create_success();
 }
@@ -81,7 +87,6 @@ Result extract_json_list_of_strings(const char *json, const char *key, size_t li
     {
         return create_success();
     }
-
 
 
     // check to see if the array is empty
@@ -140,7 +145,7 @@ Result extract_json_feilds(const char *json, JsonFeild * json_feilds, size_t cou
 {
     for (int i = 0; i < count; i++)
     {
-        Result result = extract_json_value(json, json_feilds[i].key, json_feilds[i].output, json_feilds[i].output_size);
+        Result result = extract_json_value(json, json_feilds[i].key, json_feilds[i].output, json_feilds[i].output_size, json_feilds[i].min_size);
         if (result.status==ERROR)
         {
             return result;

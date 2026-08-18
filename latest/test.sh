@@ -3,8 +3,9 @@
 # ARG 1 - LEVEL OF TESTING. 
 #   0 - NO TEST
 #   1 - UNIT TEST
-#   2 - POSTMAN FAST TESTS
-#   3 - POSTMAN SLOW TESTS
+#   2 - START UP THE SERVER
+#   3 - POSTMAN FAST TESTS
+#   4 - POSTMAN SLOW TESTS
 # ARG 2 - KILL SERVER AFTER COMPLETION
 #   0 - KILL SERVER
 #   1 - LEAVE RUNNING
@@ -75,17 +76,19 @@ if [[ ${1:-4} -ge 2  ]]; then
     echo "SERVER PID: $SERVER_PID"
 fi
 
-if [[ ${1:-4} -ge 2  ]]; then
-    echo "COMPLETING POSTMAN FAST TESTS"
+if [[ ${1:-4} -ge 3  ]]; then
+    echo "RUNNING POSTMAN FAST TESTS"
     sleep 2
-    newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+    newman run postman/Fast.postman_collection.json --env-var "host=localhost"
+    echo "COMPLETED POSTMAN FAST TESTS!"
 fi
 
-# if [[ ${1:-4} -ge 3  ]]; then
-#     echo "COMPLETING POSTMAN SLOW TESTS"
-#     sleep 2
-#     newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
-# fi
+if [[ ${1:-4} -ge 3  ]]; then
+    echo "RUNNING POSTMAN SLOW TESTS"
+    sleep 2
+    newman run postman/Slow.postman_collection.json --env-var "host=localhost"
+    echo "COMPLETED POSTMAN SLOW TESTS!"
+fi
 
 if [[ ${2:-0} -ge 1  ]]; then
     echo "NOT KILLING THE SERVER"
