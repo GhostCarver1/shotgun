@@ -33,7 +33,7 @@ int test_json_extractor_1()
 {
     char json[] = "{\"hello\":\"hi\"}";
     char buffer[10];
-    Result result = extract_json_value(json, "hello",  buffer, 10);
+    Result result = extract_json_value(json, "hello",  buffer, 10, 0);
     CHECK(result);
     return assert_equal_buffers(buffer,"hi");
 }

@@ -17,16 +17,18 @@
 
 #include "../result/result.h"
 
-#define FIELD(name, request) {#name, request.name, sizeof(request.name)}
+#define FIELD(name, request) {#name, request.name, sizeof(request.name), 0}
+#define FIELD_MIN(name, request, min_size) {#name, request.name, sizeof(request.name), min_size}
 
 typedef struct {
     char * key;
     char * output;
     size_t output_size;
+    int min_size;
 } JsonFeild;
 
 Result extract_json_value(const char *json, const char *key,
-                       char *output, size_t output_size);
+                       char *output, size_t output_size, size_t min_size);
 
 Result extract_json_list_of_strings(const char *json, const char *key, size_t list_size, size_t buffer_size, char output[list_size][buffer_size]);
 

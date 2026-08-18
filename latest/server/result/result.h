@@ -1,7 +1,11 @@
 #ifndef RESULT_H
 #define RESULT_H
 
-# include "../constants.h"
+#include "../constants.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
 
 typedef enum
 {
@@ -53,6 +57,7 @@ typedef struct
 } Result;
 
 Result create_error(ErrorType error_type, int error_code, const char * format, ...);
+int json_clean(const char * format, va_list args, char dst[MAX_ERROR_MESSAGE_LENGTH]);
 
 Result create_success();
 

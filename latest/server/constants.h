@@ -13,6 +13,10 @@
 #define USER_NAME_SIZE 32
 #define ID_SIZE 32
 
+#define MIN_EMAIL_SIZE 4
+#define MIN_USER_NAME_SIZE 4
+#define MIN_PASSWORD_SIZE 4
+
 #define TOKEN_BYTES 32
 #define TOKEN_HEX_LEN (TOKEN_BYTES * 2 + 1)
 
@@ -23,5 +27,8 @@
 #define PORT 8080
 
 #define MAX_ERROR_MESSAGE_LENGTH 256
+
+#define TRUE 1
+#define FALSE 0
 
 #endif

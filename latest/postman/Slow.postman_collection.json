@@ -1,0 +1,729 @@
+{
+  "info": {
+    "_postman_id": "c5d9a7d4-190d-4ef1-ac47-b7c2dbf8b3b9",
+    "name": "Shotgun Slow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54352420"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "item": [
+        {
+          "name": "Incorrect Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is NOT 200\", function () {",
+                  "    pm.response.to.not.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is valid JSON\", function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    pm.expect(pm.response.json().status).to.eql(\"failure\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"alic@example.com\",\n    \"password\":\"amicable\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "incorrect Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"alice@example.com\",\n    \"password\":\"amicabl\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\":\"amicabl\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Missing Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response status is failure\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"failure\");",
+                  "});",
+                  "",
+                  "/*",
+                  "pm.test(\"Reason is INCORRECT PASSWORD\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.reason).to.eql(\"INCORRECT PASSWORD\");",
+                  "});",
+                  "*/",
+                  "",
+                  "pm.test(\"Response time is under 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\":\"alice@example.com\"\n}\n"
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too Big Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Email is at least 128 characters long\", function () {\r",
+                  "    const body = JSON.parse(pm.request.body.raw);\r",
+                  "    const email = body.email;\r",
+                  "    pm.expect(email).to.be.a(\"string\");\r",
+                  "    pm.expect(email.length).to.be.at.least(128);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\r\n    \"password\":\"amicable\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too Big Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Email is at least 128 characters long\", function () {\r",
+                  "    const body = JSON.parse(pm.request.body.raw);\r",
+                  "    const password = body.password;\r",
+                  "    pm.expect(password).to.be.a(\"string\");\r",
+                  "    pm.expect(password.length).to.be.at.least(128);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"alice@example.com\",\r\n    \"password\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/login",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SignUp",
+      "item": [
+        {
+          "name": "User Name Already Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response status is failure\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.status).to.eql(\"failure\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Email Already Exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response status is failure\", function () {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.status).to.eql(\"failure\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"notjustin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too big User Name",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"Justin.......................................................................................................\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too big Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com...............................................................................................................................................................................\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too big Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded.....................................................................................................................................................\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too Small User Name",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"\",\r\n    \"email\":\"justin1@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too Small Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"justin\",\r\n    \"email\":\"\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Too Small Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_name\":\"justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://{{host}}:8080/signup",
+              "protocol": "http",
+              "host": [
+                "{{host}}"
+              ],
+              "port": "8080",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Game",
+      "item": []
+    },
+    {
+      "name": "Permission",
+      "item": []
+    },
+    {
+      "name": "Complex",
+      "item": [
+        {
+          "name": "Creating a new user",
+          "item": [
+            {
+              "name": "SignUp Bradley",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"user_name\":\"Bradley\",\r\n    \"email\":\"bradley@example.com\",\r\n    \"password\":\"brave\"\r\n}\r\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/signup",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login Bradley",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;\r",
+                      "if (token) {\r",
+                      "    pm.environment.set(\"bradley_token\", token);\r",
+                      "    pm.environment.set(\"bradley_user_id\", json.user_id);\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"bradley@example.com\",\n    \"password\":\"brave\"\n}\n"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/login",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Permission Bradley",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"user_id\":\"{{bradley_user_id}}\",\"token\":\"{{bradley_token}}\"}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/permission",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "permission"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": ""
+    }
+  ]
+}
