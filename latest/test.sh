@@ -1,3 +1,14 @@
+
+# PROGRAM TAKES TWO ARGUMENTS.
+# ARG 1 - LEVEL OF TESTING. 
+#   0 - NO TEST
+#   1 - UNIT TEST
+#   2 - POSTMAN FAST TESTS
+#   3 - POSTMAN SLOW TESTS
+# ARG 2 - KILL SERVER AFTER COMPLETION
+#   0 - KILL SERVER
+#   1 - LEAVE RUNNING
+
 #!/bin/bash
 set -e
 
@@ -48,7 +59,7 @@ fi
 
 echo "PROGRAM TEST AND MAIN COMPILED"
 
-if [[ ${1:-0} -ge 1 ]]; then
+if [[ ${1:-4} -ge 1 ]]; then
     echo "RUNNING UNIT TESTS"
     if ! ./test; then
         echo "TESTS FAILED"
@@ -58,23 +69,23 @@ if [[ ${1:-0} -ge 1 ]]; then
     fi
 fi
 
-if [[ ${1:-0} -ge 2  ]]; then
+if [[ ${1:-4} -ge 2  ]]; then
     echo "STARTING UP THE SERVER"
     ./shotgun 1 & SERVER_PID=$!
     echo "SERVER PID: $SERVER_PID"
 fi
 
-if [[ ${1:-0} -ge 3  ]]; then
+if [[ ${1:-4} -ge 2  ]]; then
     echo "COMPLETING POSTMAN FAST TESTS"
     sleep 2
     newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
 fi
 
-if [[ ${1:-0} -ge 4  ]]; then
-    echo "COMPLETING POSTMAN SLOW TESTS"
-    sleep 2
-    newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
-fi
+# if [[ ${1:-4} -ge 3  ]]; then
+#     echo "COMPLETING POSTMAN SLOW TESTS"
+#     sleep 2
+#     newman run postman/shotgun.postman_collection.json --env-var "host=localhost"
+# fi
 
 if [[ ${2:-0} -ge 1  ]]; then
     echo "NOT KILLING THE SERVER"
