@@ -35,7 +35,7 @@ typedef struct
 } PGResponse;
 
 int handle_post_game_request(int client_fd, const char * request);
-Result db_reserve_game_id(PGconn * conn, char game_id[ID_SIZE]);
+Result db_reserve_game_id(PGconn * conn, const char player_id[ID_SIZE], char game_id[ID_SIZE]);
 Result db_connect_game_to_player_ids(PGconn * conn, int player_count, char game_id[ID_SIZE], char player_ids[MAX_PLAYERS][ID_SIZE]);
 Result db_ensure_existance_players(PGconn * conn, int player_count, char player_ids[MAX_PLAYERS][ID_SIZE]);
 

@@ -3,17 +3,19 @@
 --drop table if exists tokens;
 --drop table if exists players;
 
-Create table if not EXISTS games ( 
-    game_id BIGSERIAL Primary key,
-    active BOOLEAN DEFAULT TRUE
-);
-
 Create table if not EXISTS players (
     player_id BIGSERIAL Primary key,
     user_name varchar(255) not null unique,
     user_email varchar(255) not null unique,
     user_hash varchar(255) not null
 );
+
+Create table if not EXISTS games ( 
+    game_id BIGSERIAL Primary key,
+    active BOOLEAN DEFAULT TRUE,
+    owner_id BIGSERIAL references players(player_id)
+);
+
 
 Create table game_players (
     game_id BIGSERIAL references games(game_id),

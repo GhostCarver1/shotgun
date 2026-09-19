@@ -24,12 +24,13 @@ typedef struct
 
 typedef struct
 {
-    
+    GameState game_state;
 } QGContext;
 
 typedef struct
 {
    char game_id[ID_SIZE];
+   char owner_id[ID_SIZE];
    char player_ids[MAX_PLAYERS][ID_SIZE];
    int player_count;
 } QGResponse;

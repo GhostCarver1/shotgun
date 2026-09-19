@@ -54,7 +54,7 @@ int handle_post_game_request(int client_fd, const char * request)
         return 0;
     } 
 
-    Result reserve_game_id_result = db_reserve_game_id(conn, pgresponse.game_id);
+    Result reserve_game_id_result = db_reserve_game_id(conn, pgrequest.user_id  ,pgresponse.game_id);
     if (reserve_game_id_result.status != SUCCESS)
     {
         send_failure(client_fd, 400, reserve_game_id_result.message);
@@ -71,19 +71,20 @@ int handle_post_game_request(int client_fd, const char * request)
     db_disconnect(conn);
 
     char response[MAX_RESPONSE_SIZE];
+    
     snprintf(response, sizeof(response), "{\"status\":\"success\", \"game_id\":\"%s\"}", pgresponse.game_id);
     send_response(client_fd, "application/json", response);
 }
 
-Result db_reserve_game_id(PGconn * conn, char game_id[ID_SIZE])
+Result db_reserve_game_id(PGconn * conn, const char owner_id[ID_SIZE],  char game_id[ID_SIZE])
 {
 
-    const char *sql ="Insert into games DEFAULT values returning game_id;";
+    const char *sql ="Insert into games (owner_id) values ($1) returning game_id;";
 
-    const char *params[0] = {};
+    const char *params[1] = {owner_id};
 
     PGresult *res = PQexecParams(
-        conn,sql,0,NULL,params,NULL,NULL,0
+        conn,sql,1,NULL,params,NULL,NULL,0
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {

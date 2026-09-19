@@ -7,6 +7,7 @@
 
 
 int main();
-
+int setup_webpage();
+void * handle_response(void * arg);
 
 #endif
