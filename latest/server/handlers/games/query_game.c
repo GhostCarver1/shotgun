@@ -45,7 +45,7 @@ int handle_query_game_request(int client_fd, const char * request)
     }
 
     char response[MAX_RESPONSE_SIZE];
-    snprintf(response, sizeof(response), "{\"status\":\"success\",\"game_id\":\"%s\",\"player_count\":%d, \"player_ids\":[", qgresponse.game_id, qgresponse.player_count);
+    snprintf(response, sizeof(response), "{\"status\":\"success\",\"game_id\":\"%s\",\"owner_id\":\"%s\",\"player_count\":%d, \"player_ids\":[", qgresponse.game_id, qgresponse.owner_id, qgresponse.player_count);
     int used = strlen(response);
     for (int i = 0; i < qgresponse.player_count; i++)
     {
@@ -59,7 +59,7 @@ int handle_query_game_request(int client_fd, const char * request)
 Result db_query_game(PGconn * conn, const char game_id[ID_SIZE], QGResponse * qgresponse)
 {
 
-    char *sql1 = "Select * from games where game_id = $1 and active = TRUE;";
+    char *sql1 = "Select game_id, owner_id from games where game_id = $1 and active = TRUE;";
 
     const char *params1[1] = {game_id};
 
@@ -79,6 +79,9 @@ Result db_query_game(PGconn * conn, const char game_id[ID_SIZE], QGResponse * qg
 
     strncpy(qgresponse->game_id, PQgetvalue(res1,0,0),ID_SIZE - 1);
     qgresponse->game_id[ID_SIZE - 1] = '\0';
+
+    strncpy(qgresponse->owner_id, PQgetvalue(res1,0,1),ID_SIZE - 1);
+    qgresponse->owner_id[ID_SIZE - 1] = '\0';
 
     PQclear(res1);
 

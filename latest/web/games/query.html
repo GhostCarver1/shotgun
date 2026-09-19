@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+    <link rel="stylesheet" href="/style.css">
+    <title>Shotgun Games</title>
+    </head>
+    <nav>
+         <a href="/index.html"><button>home</button></a>
+    </nav>
+
+    <form id="query_game_form">
+        <label for="input_game_id">Game Id:</label>
+        <input type="text" id="input_game_id" name="input_game_id">
+        <br>
+        <input type="submit" value="query_game">
+    </form>
+
+    <span id="query_game_span">
+        <text>GAME ID: <span id="game_id"></span></text><br>
+        <text>OWNER ID: <span id="owner_id"></span></text><br>
+        <text>PLAYER COUNT: <span id="player_count"></span></text><br>
+        <text>PLAYER IDS: <span id="player_ids"></span></text><br>
+    </span >
+
+</html>
+
+<script>
+
+const query_game_form = document.getElementById("query_game_form");
+
+query_game_form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const game_id = document.getElementById("input_game_id").value;
+
+    get_game("abc", game_id);
+
+});
+
+async function get_game(token, game_id)
+{
+    try {
+        const response = await fetch("/game/", {
+            method: "QUERY",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                token: token,
+                game_id: game_id
+            })
+        });
+
+        console.log("Status:", response.status);
+        console.log("OK:", response.ok);
+
+        const data = await response.json();
+
+        document.getElementById("game_id").innerHTML = data.game_id;
+        document.getElementById("player_count").innerHTML = data.player_count;
+        document.getElementById("player_ids").innerHTML = data.player_ids;
+        document.getElementById("owner_id").innerHTML = data.owner_id;
+
+        console.log(data);
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+</script>
