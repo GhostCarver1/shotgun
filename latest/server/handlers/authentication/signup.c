@@ -99,6 +99,8 @@ Result db_store_new_user(PGconn * conn, SignUpRequest * signup_request, SignUpCo
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,  "Returning the new player id : %s\n", PQerrorMessage(conn));
     }
 
+    PQclear(res);
+
     return create_success();
 
 }

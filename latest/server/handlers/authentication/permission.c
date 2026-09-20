@@ -1,22 +1,5 @@
 #include "permission.h"
 
-
-/*
-    POST /permission
-    {
-        "token":"abcdef",
-        "id":"1"
-    }
-    
-    RESPONSE 
-    {
-        "status":"success",
-        "permission":"allowed",
-        "reason":"some reason"
-    }
-
-*/
-
 int handle_permission_request(int client_fd, const char * request)
 {
     char * body = strstr(request, "\r\n\r\n");
