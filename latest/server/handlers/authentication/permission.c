@@ -74,13 +74,11 @@ Result db_get_token_information(PGconn * conn, PermissionRequest * permission_re
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         PQclear(res);
-        //fprintf(stderr, "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
         return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_INVALID, "Getting token informaiton query invalid: \"%s\"\n", PQerrorMessage(conn));
     }
 
     if (PQntuples(res) == 0) {
         PQclear(res);
-        //fprintf(stderr, "There was no token for player:  %s\n", permission_request->user_id);
         return create_error(ERROR_TYPE_DATABASE, ERROR_CODE_DATABASE_QUERY_EMPTY, "Getting token informaiton query turned up empty: \"%s\"\n", PQerrorMessage(conn));
     }
     

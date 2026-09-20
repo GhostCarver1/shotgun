@@ -94,9 +94,11 @@ Result db_store_hashed_token(PGconn * conn, const char * id, const char * token_
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
     }
     if (PQntuples(res) == 0) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to insert token hash into database: %s\n", id);
     }
 

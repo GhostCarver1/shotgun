@@ -3,7 +3,10 @@ shotgun:
     	-I/usr/include/postgresql \
     	-o shotgun \
     	-lpq \
-    	-lsodium
+    	-lsodium \
+		-Wall \
+		-Wextra \
+		-Wpedantic
 
 test:
 	gcc logic/game/*.c  tests/*.c server/sender.c server/result/*.c server/handlers/authentication/*.c server/handlers/games/*.c server/helpers/*.c database/database.c \
@@ -11,6 +14,9 @@ test:
     	-o test \
     	-lpq \
     	-lsodium
+		-Wall \
+		-Wextra \
+		-Wpedantic
 clean:
 	rm -f *.o shotgun
 

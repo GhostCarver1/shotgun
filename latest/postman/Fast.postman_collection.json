@@ -1,468 +1,310 @@
 {
   "info": {
     "_postman_id": "31a71aeb-11aa-45c2-bcc1-143942996f8b",
-    "name": "Shotgun Fast",
+    "name": "Fast",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "54352420"
   },
   "item": [
     {
-      "name": "Login",
+      "name": "Games",
       "item": [
         {
-          "name": "Alice",
-          "event": [
+          "name": "Post Game",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is under 2000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
-                  "});",
-                  "",
-                  "pm.test(\"Response body is valid JSON\", function () {",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an auth token\", function () {",
-                  "    const json = pm.response.json();",
-                  "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "    pm.expect(hasToken).to.exist;",
-                  "});",
-                  "",
-                  "pm.test(\"Response does not expose the password\", function () {",
-                  "    const json = pm.response.json();",
-                  "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "if (token) {",
-                  "    pm.environment.set(\"alice_token\", token);",
-                  "    pm.environment.set(\"alice_user_id\", json.user_id);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\":\"alice@example.com\", \n    \"password\":\"amicable\"\n}\n",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "name": "Create Game First",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "",
+                      "pm.test(\"Status is success\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.status).to.eql(\"success\");",
+                      "});",
+                      "",
+                      "pm.test(\"game id feild exists\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.game_id).to.exist;",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "if (json.status === \"success\") {",
+                      "    pm.environment.set(\"game_id_first\", json.game_id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
               ],
-              "port": "8080",
-              "path": [
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Bob",
-          "event": [
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"token\":\"abc\",\r\n    \"user_id\":\"1\",\r\n    \"player_ids\":[\"1\",\"2\",\"3\"]\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/games",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "games"
+                  ]
+                }
+              },
+              "response": []
+            },
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is under 2000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
-                  "});",
-                  "",
-                  "pm.test(\"Response body is valid JSON\", function () {",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an auth token\", function () {",
-                  "    const json = pm.response.json();",
-                  "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "    pm.expect(hasToken).to.exist;",
-                  "});",
-                  "",
-                  "pm.test(\"Response does not expose the password\", function () {",
-                  "    const json = pm.response.json();",
-                  "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "if (token) {",
-                  "    pm.environment.set(\"bob_token\", token);",
-                  "    pm.environment.set(\"bob_user_id\", json.user_id);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\":\"bob@example.com\",\n    \"password\":\"benevolent\"\n}\n\n",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "name": "Create Game Second",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "\r",
+                      "pm.test(\"Status is success\", function () {\r",
+                      "    const jsonData = pm.response.json();\r",
+                      "    pm.expect(jsonData.status).to.eql(\"success\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"game id feild exists\", function () {\r",
+                      "    const jsonData = pm.response.json();\r",
+                      "    pm.expect(jsonData.game_id).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "const json = pm.response.json();\r",
+                      "if (json.status === \"success\") {\r",
+                      "    pm.environment.set(\"game_id_second\", json.game_id);\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
               ],
-              "port": "8080",
-              "path": [
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Charlie",
-          "event": [
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"token\":\"abc\",\r\n    \"user_id\":\"1\",\r\n    \"player_ids\":[\"1\",\"2\",\"3\"]\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/games",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "games"
+                  ]
+                }
+              },
+              "response": []
+            },
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is under 2000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
-                  "});",
-                  "",
-                  "pm.test(\"Response body is valid JSON\", function () {",
-                  "    pm.response.to.be.json;",
-                  "});",
-                  "",
-                  "pm.test(\"Response contains an auth token\", function () {",
-                  "    const json = pm.response.json();",
-                  "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "    pm.expect(hasToken).to.exist;",
-                  "});",
-                  "",
-                  "pm.test(\"Response does not expose the password\", function () {",
-                  "    const json = pm.response.json();",
-                  "    pm.expect(json).to.not.have.property(\"password\");",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
-                  "if (token) {",
-                  "    pm.environment.set(\"charlie_token\", token);",
-                  "    pm.environment.set(\"charlie_user_id\", json.user_id);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\":\"charlie@example.com\",\n    \"password\":\"cunning\"\n}\n",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "name": "Create Game Third",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "\r",
+                      "pm.test(\"Status is success\", function () {\r",
+                      "    const jsonData = pm.response.json();\r",
+                      "    pm.expect(jsonData.status).to.eql(\"success\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"game id feild exists\", function () {\r",
+                      "    const jsonData = pm.response.json();\r",
+                      "    pm.expect(jsonData.game_id).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "const json = pm.response.json();\r",
+                      "if (json.status === \"success\") {\r",
+                      "    pm.environment.set(\"game_id_third\", json.game_id);\r",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/login",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
               ],
-              "port": "8080",
-              "path": [
-                "login"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "SignUp",
-      "item": [
-        {
-          "name": "Justin",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"Response time is under 2000ms\", function () {\r",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"Response does not expose the password\", function () {\r",
-                  "    const json = pm.response.json();\r",
-                  "    pm.expect(json).to.not.have.property(\"password\");\r",
-                  "});\r",
-                  "// chec if status is success\r",
-                  "pm.test(\"Response status is success\", function () {\r",
-                  "    pm.expect(pm.response.json().status).to.eql(\"success\");\r",
-                  "});\r",
-                  "\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"token\":\"abc\",\r\n    \"user_id\":\"1\",\r\n    \"player_ids\":[\"3\",\"2\",\"1\"]\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/games",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "games"
+                  ]
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/signup",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "8080",
-              "path": [
-                "signup"
-              ]
+              },
+              "response": []
             }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Game",
-      "item": [
-        {
-          "name": "Create Game First",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "",
-                  "pm.test(\"Status is success\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql(\"success\");",
-                  "});",
-                  "",
-                  "pm.test(\"game id feild exists\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.game_id).to.exist;",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "if (json.status === \"success\") {",
-                  "    pm.environment.set(\"game_id_first\", json.game_id);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"token\":\"abc\",\r\n    \"user_id\":\"1\",\r\n    \"player_ids\":[\"1\",\"2\",\"3\",\"4\"]\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/games",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "8080",
-              "path": [
-                "games"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Game Second",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "\r",
-                  "pm.test(\"Status is success\", function () {\r",
-                  "    const jsonData = pm.response.json();\r",
-                  "    pm.expect(jsonData.status).to.eql(\"success\");\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"game id feild exists\", function () {\r",
-                  "    const jsonData = pm.response.json();\r",
-                  "    pm.expect(jsonData.game_id).to.exist;\r",
-                  "});\r",
-                  "\r",
-                  "const json = pm.response.json();\r",
-                  "if (json.status === \"success\") {\r",
-                  "    pm.environment.set(\"game_id_second\", json.game_id);\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"token\":\"abc\",\r\n    \"user_id\":\"1\",\r\n    \"player_ids\":[\"1\",\"2\",\"3\"]\r\n}\r\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/games",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "8080",
-              "path": [
-                "games"
-              ]
-            }
-          },
-          "response": []
+          ]
         },
         {
           "name": "Query Game",
-          "event": [
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Status is success\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql(\"success\");",
-                  "});",
-                  "",
-                  "pm.test(\"Response has game_id\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property(\"game_id\");",
-                  "});",
-                  "",
-                  "pm.test(\"Player count is 4\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.player_count).to.equal(4);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "QUERY",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"token\":\"abc\",\r\n    \"game_id\":\"{{game_id_first}}\"\r\n}"
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/game/2",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
+              "name": "Query Game First",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Status is success\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.status).to.eql(\"success\");",
+                      "});",
+                      "",
+                      "pm.test(\"Response has game_id\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    const game_id_first = pm.environment.get(\"game_id_first\");",
+                      "    pm.expect(jsonData.game_id).to.equal(game_id_first);",
+                      "    pm.expect(jsonData).to.have.property(\"game_id\");",
+                      "});",
+                      "",
+                      "pm.test(\"Player count is 3\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    const game_id_first = pm.environment.get(\"game_id_first\");",
+                      "    pm.expect(jsonData.player_count).to.equal(3);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
               ],
-              "port": "8080",
-              "path": [
-                "game",
-                "2"
-              ]
+              "request": {
+                "method": "QUERY",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"token\":\"abc\",\r\n    \"game_id\":\"{{game_id_first}}\"\r\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/game/2",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "game",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Query Game Third",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Status is success\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.status).to.eql(\"success\");",
+                      "});",
+                      "",
+                      "pm.test(\"Response has game_id\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    const game_id_third = pm.environment.get(\"game_id_third\");",
+                      "    pm.expect(jsonData.game_id).to.equal(game_id_third);",
+                      "    pm.expect(jsonData).to.have.property(\"game_id\");",
+                      "});",
+                      "",
+                      "pm.test(\"Player count is 3\", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    const game_id_third = pm.environment.get(\"game_id_third\");",
+                      "    pm.expect(jsonData.player_count).to.equal(3);",
+                      "});",
+                      "",
+                      "pm.test(\"Player ids are 3 4 1 \", function () {",
+                      "    const jsonData = pm.response.json();",
+                      "    pm.expect(jsonData).to.not.be.undefined;",
+                      "    pm.expect(jsonData.player_ids).to.deep.equal(['3', '2', '1']);",
+                      "});",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "QUERY",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"token\":\"abc\",\r\n    \"game_id\":\"{{game_id_third}}\"\r\n}"
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/game/2",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "game",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         },
         {
           "name": "Delete Game",
@@ -504,7 +346,7 @@
           "response": []
         },
         {
-          "name": "Query Game Copy",
+          "name": "Query Deleted Game",
           "event": [
             {
               "listen": "test",
@@ -546,91 +388,386 @@
       ]
     },
     {
-      "name": "Permission",
+      "name": "authentication",
       "item": [
         {
-          "name": "Alice Permission",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"user_id\":\"{{alice_user_id}}\",\"token\":\"{{alice_token\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
+          "name": "Permission",
+          "item": [
+            {
+              "name": "Alice Permission",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"user_id\":\"{{alice_user_id}}\",\"token\":\"{{alice_token}}\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/permission",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "permission"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
-            "url": {
-              "raw": "http://{{host}}:8080/permission",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
-              ],
-              "port": "8080",
-              "path": [
-                "permission"
-              ]
+            {
+              "name": "Bob Permission",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"user_id\":\"{{bob_user_id}}\",\"token\":\"{{bob_token}}\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/permission",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "permission"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Charlie Permission",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\"user_id\":\"{{charlie_user_id}}\",\"token\":\"{{charlie_token}}\"}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/permission",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "permission"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         },
         {
-          "name": "Bob Permission",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"user_id\":\"{{bob_user_id}}\",\"token\":\"{{bob_token}}\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
+          "name": "SignUp",
+          "item": [
+            {
+              "name": "Justin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response time is under 2000ms\", function () {\r",
+                      "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response does not expose the password\", function () {\r",
+                      "    const json = pm.response.json();\r",
+                      "    pm.expect(json).to.not.have.property(\"password\");\r",
+                      "});\r",
+                      "// chec if status is success\r",
+                      "pm.test(\"Response status is success\", function () {\r",
+                      "    pm.expect(pm.response.json().status).to.eql(\"success\");\r",
+                      "});\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/permission",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
               ],
-              "port": "8080",
-              "path": [
-                "permission"
-              ]
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"user_name\":\"Justin\",\r\n    \"email\":\"justin@example.com\",\r\n    \"password\":\"jaded\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/signup",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         },
         {
-          "name": "Charlie Permission",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"user_id\":\"{{charlie_user_id}}\",\"token\":\"{{charlie_token}}\"}",
-              "options": {
-                "raw": {
-                  "language": "json"
+          "name": "Login",
+          "item": [
+            {
+              "name": "Alice",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is under 2000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "pm.test(\"Response body is valid JSON\", function () {",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an auth token\", function () {",
+                      "    const json = pm.response.json();",
+                      "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "    pm.expect(hasToken).to.exist;",
+                      "});",
+                      "",
+                      "pm.test(\"Response does not expose the password\", function () {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json).to.not.have.property(\"password\");",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "if (token) {",
+                      "    pm.environment.set(\"alice_token\", token);",
+                      "    pm.environment.set(\"alice_user_id\", json.user_id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
                 }
-              }
-            },
-            "url": {
-              "raw": "http://{{host}}:8080/permission",
-              "protocol": "http",
-              "host": [
-                "{{host}}"
               ],
-              "port": "8080",
-              "path": [
-                "permission"
-              ]
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"alice@example.com\", \n    \"password\":\"amicable\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/login",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Bob",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is under 2000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "pm.test(\"Response body is valid JSON\", function () {",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an auth token\", function () {",
+                      "    const json = pm.response.json();",
+                      "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "    pm.expect(hasToken).to.exist;",
+                      "});",
+                      "",
+                      "pm.test(\"Response does not expose the password\", function () {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json).to.not.have.property(\"password\");",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "if (token) {",
+                      "    pm.environment.set(\"bob_token\", token);",
+                      "    pm.environment.set(\"bob_user_id\", json.user_id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"bob@example.com\",\n    \"password\":\"benevolent\"\n}\n\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/login",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Charlie",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response time is under 2000ms\", function () {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "pm.test(\"Response body is valid JSON\", function () {",
+                      "    pm.response.to.be.json;",
+                      "});",
+                      "",
+                      "pm.test(\"Response contains an auth token\", function () {",
+                      "    const json = pm.response.json();",
+                      "    const hasToken = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "    pm.expect(hasToken).to.exist;",
+                      "});",
+                      "",
+                      "pm.test(\"Response does not expose the password\", function () {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json).to.not.have.property(\"password\");",
+                      "});",
+                      "",
+                      "const json = pm.response.json();",
+                      "const token = json.token || json.access_token || json.jwt || json.sessionToken || json.id_token;",
+                      "if (token) {",
+                      "    pm.environment.set(\"charlie_token\", token);",
+                      "    pm.environment.set(\"charlie_user_id\", json.user_id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"charlie@example.com\",\n    \"password\":\"cunning\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{host}}:8080/login",
+                  "protocol": "http",
+                  "host": [
+                    "{{host}}"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
+          ]
         }
       ]
     }
