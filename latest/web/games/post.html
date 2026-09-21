@@ -10,13 +10,13 @@
     </nav>
 
     <form id="post_game_form">
-        <label for="player_token">Token:</label>
-        <input type="text" id="player_token" name="player_token">
+        <label for="input_toekn">Token:</label>
+        <input type="text" id="player_id" name="player_id">
         <br>
         <input type="submit" value="post_game">
     </form>
 
-    <span id="post_game_span">
+    <span id="query_game_span">
         <text>GAME ID: <span id="game_id"></span></text><br>
         <text>PLAYER COUNT: <span id="player_count"></span></text><br>
         <text>PLAYER IDS: <span id="player_ids"></span></text><br>
@@ -25,47 +25,6 @@
 </html>
 
 <script>
-
-const post_game_form = document.getElementById("post_game_form");
-
-query_game_form.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const game_id = document.getElementById("post_game_form").value;
-    post_game("abc", game_id);
-
-});
-
-async function get_game(token, game_id)
-{
-    try {
-        const response = await fetch("/game/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                token: token,
-                game_id: game_id
-            })
-        });
-
-        console.log("Status:", response.status);
-        console.log("OK:", response.ok);
-
-        const data = await response.json();
-
-        document.getElementById("game_id").innerHTML = data.game_id;
-        document.getElementById("player_count").innerHTML = data.player_count;
-        document.getElementById("player_ids").innerHTML = data.player_ids;
-        document.getElementById("owner_id").innerHTML = data.owner_id;
-
-        console.log(data);
-
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 
 </script>
