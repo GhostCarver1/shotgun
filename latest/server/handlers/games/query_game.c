@@ -35,12 +35,12 @@ int handle_query_game_request(int client_fd, const char * request)
     }
 
     PGconn * conn = db_connect();
-    Result db_get_game = db_query_game(conn, qgrequest.game_id, &qgresponse);
+    Result db_get_game_result = db_query_game(conn, qgrequest.game_id, &qgresponse);
     db_disconnect(conn);
     
-    if (db_get_game.status != SUCCESS)
+    if (db_get_game_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, db_get_game.message);
+        send_failure(client_fd, 400, db_get_game_result.message);
         return 0;
     }
 
@@ -112,7 +112,7 @@ Result db_query_game(PGconn * conn, const char game_id[ID_SIZE], QGResponse * qg
     int player_count = PQntuples(res2);
     for (int i = 0; i < player_count ; i++)
     {
-        strncpy(qgresponse->player_ids[i], PQgetvalue(res1,i,1),ID_SIZE - 1);
+        strncpy(qgresponse->player_ids[i], PQgetvalue(res2,i,1),ID_SIZE - 1);
         qgresponse->player_ids[i][ID_SIZE - 1] = '\0';
     }
     qgresponse->player_count = player_count;

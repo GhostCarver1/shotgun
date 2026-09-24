@@ -1,24 +1,30 @@
+CC := gcc
+CFLAGS := -Wall -Wextra -Wpedantic -I/usr/include/postgresql
+LDLIBS := -lpq -lsodium
+
+COMMON_SOURCES := \
+	logic/game/*.c \
+	server/sender.c \
+	server/result/*.c \
+	server/handlers/authentication/*.c \
+	server/handlers/games/*.c \
+	server/helpers/*.c \
+	database/database.c
+
 shotgun:
-	gcc logic/game/*.c  server/main.c server/sender.c server/result/*.c server/handlers/authentication/*.c server/handlers/games/*.c server/helpers/*.c database/database.c \
-    	-I/usr/include/postgresql \
-    	-o shotgun \
-    	-lpq \
-    	-lsodium
+	$(CC) $(CFLAGS) $(COMMON_SOURCES) server/main.c -o shotgun $(LDLIBS)
 
 test:
-	gcc logic/game/*.c  tests/*.c server/sender.c server/result/*.c server/handlers/authentication/*.c server/handlers/games/*.c server/helpers/*.c database/database.c \
-    	-I/usr/include/postgresql \
-    	-o test \
-    	-lpq \
-    	-lsodium
+	$(CC) $(CFLAGS) $(COMMON_SOURCES) tests/*.c -o test $(LDLIBS)
+
 clean:
 	rm -f *.o shotgun
-
-rebuild: clean shotgun
 
 clean_test:
 	rm -f *.o test
 
+rebuild: clean shotgun
+
 rebuild_test: clean_test test
 
-.PHONY: clean rebuild clean_test rebuild_test
+.PHONY: shotgun test clean clean_test rebuild rebuild_test

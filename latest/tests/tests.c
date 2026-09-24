@@ -1,9 +1,11 @@
 #include "tests.h"
+#include "db_tests.c"
 
 
 #define FAIL(message) printf("\033[31m[FAIL] %s \033[0m\n",message); return 1;
 #define PASS(message) printf("\032[31m[PASS] %s \033[0m\n",message); return 0;
 #define CHECK(result) if (result.status==ERROR) {FAIL(result.message);}
+
 
 int assert_equal_buffers(char * buffer1, char * buffer2)
 {
@@ -87,6 +89,11 @@ int test_json_string_extractor_4()
     Result result = extract_json_list_of_strings(json, "pl", 4, 10, buffer);
 
     return assert_equal_status(result.status, SUCCESS);
+}
+
+int db_tests_main() {
+    int failures = 0;
+    return failures;
 }
 
 int main() {

@@ -47,24 +47,27 @@ int handle_post_game_request(int client_fd, const char * request)
 
     PGconn * conn = db_connect();
 
-    Result ensure_players_exist_result = db_ensure_existance_players(conn, player_count, pgrequest.player_ids);
-    if (ensure_players_exist_result.status != SUCCESS)
+    Result db_ensure_players_exist_result = db_ensure_existance_players(conn, player_count, pgrequest.player_ids);
+    if (db_ensure_players_exist_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, ensure_players_exist_result.message);
+        db_disconnect(conn);
+        send_failure(client_fd, 400, db_ensure_players_exist_result.message);
         return 0;
     } 
 
-    Result reserve_game_id_result = db_reserve_game_id(conn, pgrequest.user_id  ,pgresponse.game_id);
-    if (reserve_game_id_result.status != SUCCESS)
+    Result db_reserve_game_id_result = db_reserve_game_id(conn, pgrequest.user_id  ,pgresponse.game_id);
+    if (db_reserve_game_id_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, reserve_game_id_result.message);
+        db_disconnect(conn);
+        send_failure(client_fd, 400, db_reserve_game_id_result.message);
         return 0;
     } 
 
-    Result reserver = db_connect_game_to_player_ids(conn, player_count, pgresponse.game_id, pgrequest.player_ids);
-    if (reserver.status != SUCCESS)
+    Result db_connect_game_to_player_id_result = db_connect_game_to_player_ids(conn, player_count, pgresponse.game_id, pgrequest.player_ids);
+    if (db_connect_game_to_player_id_result.status != SUCCESS)
     {
-        send_failure(client_fd, 400, reserver.message);
+        db_disconnect(conn);
+        send_failure(client_fd, 400, db_connect_game_to_player_id_result.message);
         return 0;
     } 
 
@@ -88,9 +91,11 @@ Result db_reserve_game_id(PGconn * conn, const char owner_id[ID_SIZE],  char gam
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Reservering game id invalid: %s\n", PQerrorMessage(conn));
     }
     if (PQntuples(res) == 0) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to reserve game into database: %s\n", game_id);
     }
 
@@ -98,7 +103,6 @@ Result db_reserve_game_id(PGconn * conn, const char owner_id[ID_SIZE],  char gam
     game_id[ID_SIZE-1]='\0'; 
 
     PQclear(res);
-
     return create_success();
 }
 
@@ -142,9 +146,11 @@ Result db_connect_game_to_player_ids(PGconn * conn, int player_count, char game_
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "CONNECTING PLAYERS TO GAME INVALID: %s\n", PQerrorMessage(conn));
     }
 
+    PQclear(res);
     return create_success();
 
 }
@@ -184,9 +190,11 @@ Result db_ensure_existance_players(PGconn * conn, int player_count, char player_
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Reservering game id invalid: %s\n", PQerrorMessage(conn));
     }
     if (PQntuples(res) == 0) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to reserve game into:  %s\n", PQerrorMessage(conn));
     }
 
@@ -195,9 +203,11 @@ Result db_ensure_existance_players(PGconn * conn, int player_count, char player_
 
     if (found_players!=player_count)
     {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID,"One of the player id entered does not exist");
     }
     
+    PQclear(res);
     return create_success();
 }
 

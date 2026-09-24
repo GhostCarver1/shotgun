@@ -5,6 +5,7 @@
 #include "../../../database/database.h"
 #include "../../result/result.h"
 #include "../../helpers/json_helper.h"
+#include "../../helpers/db_helper.h"
 #include "../../sender.h"
 
 #include "../../../logic/game/game_state.h"

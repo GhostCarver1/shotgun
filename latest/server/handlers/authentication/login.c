@@ -32,13 +32,13 @@ int handle_login_request(int client_fd, const char * request)
 
 
     PGconn *conn = db_connect();
-    Result gather_login_context_result = db_gather_login_context(conn, &login_request, &login_context);
+    Result db_gather_login_context_result = db_gather_login_context(conn, &login_request, &login_context);
     db_disconnect(conn);
 
-    if (gather_login_context_result.status!=SUCCESS)
+    if (db_gather_login_context_result.status!=SUCCESS)
     {
-        printf("gathering login context result failed: \"%s\" \n", gather_login_context_result.message);
-        send_failure(client_fd, 400, gather_login_context_result.message);
+        printf("gathering login context result failed: \"%s\" \n", db_gather_login_context_result.message);
+        send_failure(client_fd, 400, db_gather_login_context_result.message);
         return 0;
     }
 
@@ -94,9 +94,11 @@ Result db_store_hashed_token(PGconn * conn, const char * id, const char * token_
     );
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_INVALID, "Inserting Token Query Invalid: %s\n", PQerrorMessage(conn));
     }
     if (PQntuples(res) == 0) {
+        PQclear(res);
         return create_error(ERROR_TYPE_DATABASE,ERROR_CODE_DATABASE_QUERY_EMPTY,"Unable to insert token hash into database: %s\n", id);
     }
 
@@ -130,6 +132,8 @@ Result db_gather_login_context(PGconn * conn, const LoginRequest * login_request
     login_context->db_password_hash[crypto_pwhash_STRBYTES - 1] = '\0';
     login_context->id[ID_SIZE - 1] = '\0';
     login_context->user_name[USER_NAME_SIZE - 1] = '\0';
+
+    PQclear(res);
 
     return create_success();
 
